@@ -28,7 +28,8 @@
   --bg:#ECF0EF; --surface:#FFFFFF; --sunk:#F4F7F6; --ink:#15222A; --muted:#5A6A71; --line:#D3DBDC;
   --accent:#1C5B6D; --accent-ink:#FFFFFF; --scrim:rgba(8,16,20,.48); --bar:rgba(255,255,255,.92);
   --over:#B1372B; --over-bg:#F8E2DE; --soon:#8F620C; --soon-bg:#F5EBD3; --ok:#2C7049; --ok-bg:#DFEFE5;
-  --c-home:#1B7C8E; --c-car:#4A58C2; --c-family:#AE4778; --c-money:#3A8A4D; --c-plans:#C07A10; --c-check:#69767E;
+  --c-home:#1B7C8E; --c-car:#4A58C2; --c-family:#AE4778; --c-money:#3A8A4D; --c-plans:#C07A10; --c-check:#69767E; --c-docs:#8B5A3C;
+  --duty:#3E4C6B; --duty-bg:#E6EBF4;
   --f-display:"Barlow Condensed","Arial Narrow","Helvetica Neue",sans-serif;
   --f-body:"IBM Plex Sans",-apple-system,system-ui,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
@@ -40,7 +41,8 @@
     --bg:#0D1417; --surface:#152026; --sunk:#10191D; --ink:#E2E9EB; --muted:#93A3AA; --line:#26343A;
     --accent:#62B3C7; --accent-ink:#0A191E; --scrim:rgba(0,0,0,.6); --bar:rgba(21,32,38,.92);
     --over:#F0796B; --over-bg:#3A1C19; --soon:#E3B65C; --soon-bg:#33290E; --ok:#6FCB95; --ok-bg:#12301F;
-    --c-home:#4DB5C7; --c-car:#8F9CF3; --c-family:#E07CAA; --c-money:#6EC282; --c-plans:#E8A941; --c-check:#8A979F;
+    --c-home:#4DB5C7; --c-car:#8F9CF3; --c-family:#E07CAA; --c-money:#6EC282; --c-plans:#E8A941; --c-check:#8A979F; --c-docs:#D6A07C;
+    --duty:#A7B4D3; --duty-bg:#1A2535;
   }
 }
 *{box-sizing:border-box}
@@ -54,7 +56,8 @@ button{font:inherit;color:inherit}
 /* Header */
 .top{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
 .in{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.brand{display:flex;align-items:center;gap:10px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:8px;padding-block:10px}
+@media (max-width:380px){.brand .reg{display:none}}
 .brand h1{font-family:var(--f-display);font-weight:700;font-size:21px;letter-spacing:.07em;text-transform:uppercase;margin:0;line-height:1}
 .brand .reg{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap}
 .brand .sp{flex:1}
@@ -278,6 +281,53 @@ td.neg{color:var(--over)}
 .vers small{margin-left:auto;color:var(--muted)}
 .ver{font-size:12.5px;color:var(--muted);margin:0;text-align:center}
 
+/* Segments, This week, roster, files, viewer, search */
+.seg2{display:inline-flex;background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px;align-self:flex-start}
+.seg2 button{border:0;background:transparent;border-radius:8px;padding:7px 18px;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer}
+.seg2 button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.wk{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 2px 7px;cursor:pointer;min-width:0}
+.wk .wd2{font-family:var(--f-display);font-weight:600;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.wk .wn{font-family:var(--f-display);font-weight:700;font-size:22px;line-height:1}
+.wk.now{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.wk.now .wd2{color:var(--accent)}
+.wk .dots{justify-content:center;min-height:7px;padding:0}
+.wk.duty{background:var(--duty-bg)}
+.wk .dut{font-family:var(--f-mono);font-size:9.5px;line-height:1.2;color:var(--duty);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 3px}
+.cell.duty{background:var(--duty-bg)}
+.cell .db{display:block;height:3px;border-radius:2px;background:var(--duty);margin:0 3px}
+@media (min-width:700px){.cell .db{display:none}.lbls span.dl{background:transparent;color:var(--duty);font-family:var(--f-mono);font-size:10.5px}}
+.rost{font-family:var(--f-mono);font-size:13px;color:var(--duty);background:var(--duty-bg);padding:9px 14px;border-top:1px solid var(--line)}
+.panel > .rost:first-child{border-top:0}
+.att{display:flex;flex-wrap:wrap;gap:10px}
+.att-i{position:relative}
+.att-in{display:contents}
+.att-in .ph{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.att-t{width:74px;height:74px;border-radius:8px;border:1px solid var(--line);background:var(--sunk);padding:0;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.att-t img{width:100%;height:100%;object-fit:cover;display:block}
+.att-x{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;border:2px solid var(--surface);background:var(--ink);color:var(--surface);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.att-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chk{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--muted)}
+.chk input,.fld .chk input{width:20px;height:20px;min-height:0;margin:0;padding:0;border:0;background:none;-webkit-appearance:auto;appearance:auto;accent-color:var(--accent)}
+.thumbx{width:44px;height:44px;border-radius:7px;background:var(--sunk);border:1px solid var(--line);overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.thumbx img{width:100%;height:100%;object-fit:cover;display:block}
+.hit.th{grid-template-columns:44px minmax(0,1fr) auto}
+.hit.th .thumbx{grid-column:1;grid-row:1 / span 2}
+.hit.th .t,.hit.th .s{grid-column:2}
+.hit.th .r{grid-column:3}
+.sheet-extra{display:flex;gap:8px;flex-wrap:wrap}
+.viewer{position:fixed;inset:0;z-index:25;background:#0B0F12;color:#FFFFFF;display:flex;flex-direction:column}
+.vbar{display:flex;align-items:center;gap:10px;padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:10px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+.vbar span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.vbar button{background:rgba(255,255,255,.16);color:#FFFFFF;border:0;border-radius:8px;padding:8px 13px;font-weight:600;cursor:pointer}
+.vbody{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px 10px calc(16px + env(safe-area-inset-bottom,0px))}
+.vbody img,.vbody canvas{max-width:100%;height:auto;background:#FFFFFF;border-radius:2px}
+.vbody p{color:#C9D2D6;margin:24px 16px;text-align:center}
+.fld input[type="search"]{font-size:17px}
+.qhint{padding:16px;color:var(--muted);font-size:14px}
+mark{background:var(--soon-bg);color:inherit;border-radius:3px;padding:0 1px}
+.code-box{font-family:var(--f-mono);font-size:12.5px;word-break:break-all;background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:10px 12px;user-select:all;-webkit-user-select:all}
+
 .toast{position:fixed;left:50%;bottom:calc(var(--tabh) + 16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:999px;font-size:14px;z-index:30;max-width:calc(100% - 32px);text-align:center}
 @media (min-width:700px){.toast{bottom:22px}}
 </style>
@@ -290,6 +340,7 @@ td.neg{color:var(--over)}
       <span class="reg" id="hdrDate"></span>
       <span class="sp"></span>
       <button class="upd" id="updBtn" type="button" data-act="update" hidden>Update</button>
+      <button class="ibtn" type="button" data-act="search" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></svg></button>
       <button class="ibtn" type="button" data-act="menu" aria-label="Settings and backup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
       <button class="btn sm" type="button" data-act="chooser" aria-label="Add">+ Add</button>
     </div>
@@ -321,12 +372,13 @@ td.neg{color:var(--over)}
   <div class="scrim" data-act="close"></div>
   <form class="sheet" id="sheet" novalidate role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></form>
 </div>
+<div class="viewer" id="viewer" hidden><div class="vbar"><button type="button" data-act="vclose">Close</button><span id="vTitle"></span><button type="button" data-act="vshare" id="vShare">Share</button></div><div class="vbody" id="vBody"></div></div>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script>
 (function(){
 'use strict';
-var APP_VERSION='1';
+var APP_VERSION='2';
 
 /* ---------- utilities ---------- */
 const $ = s => document.querySelector(s);
@@ -340,53 +392,75 @@ function addMonths(d,n){ const t=d.getMonth()+n; const y=d.getFullYear()+Math.fl
 function dayDiff(a,b){ return Math.round((b-a)/86400000); }
 function monthsBetween(a,b){ return (b.getFullYear()-a.getFullYear())*12 + (b.getMonth()-a.getMonth()); }
 function yearDate(d,y){ const last=new Date(y,d.getMonth()+1,0).getDate(); return new Date(y,d.getMonth(),Math.min(d.getDate(),last)); }
+const monthStart = d => new Date(d.getFullYear(), d.getMonth(), 1);
 const fDate = (d,o) => d ? d.toLocaleDateString('en-GB', o || {day:'numeric',month:'short',year:'numeric'}) : '—';
 const fDay = d => d ? d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}) : '—';
 const fMY = d => d ? d.toLocaleDateString('en-GB',{month:'short',year:'numeric'}) : '—';
+const fHM = t => new Date(t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 const num = n => Math.round(+n||0).toLocaleString('en-US');
 const cur = () => esc(S.settings.currency || 'AED');
 const money = n => cur()+' '+num(n);
 function compact(n){ const a=Math.abs(n); if(a>=1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M'; if(a>=1e3) return (n/1e3).toFixed(a>=1e4?0:1).replace(/\.0$/,'')+'k'; return String(Math.round(n)); }
 const lab = (list,v) => { const x=list.find(o=>String(o[0])===String(v)); return x ? x[1] : ''; };
 const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-function whenLocal(ms){ const d=new Date(ms), t=d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); return iso(d)===iso(new Date()) ? 'today '+t : d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' '+t; }
+const now = () => Date.now();
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+function whenLocal(ms){ const d=new Date(ms), t=fHM(ms); return iso(d)===iso(new Date()) ? 'today '+t : d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' '+t; }
+function strHash(s){ let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0).toString(36)+'.'+s.length; }
+function stable(v){
+  if(Array.isArray(v)) return '['+v.map(stable).join(',')+']';
+  if(v && typeof v==='object') return '{'+Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>JSON.stringify(k)+':'+stable(v[k])).join(',')+'}';
+  return JSON.stringify(v===undefined?null:v);
+}
+const fold = s => String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 
 /* ---------- reference lists ---------- */
 const CAT = {
   home:{label:'Home',c:'var(--c-home)'}, car:{label:'Car',c:'var(--c-car)'}, family:{label:'Family',c:'var(--c-family)'},
-  money:{label:'Payments',c:'var(--c-money)'}, plans:{label:'Plans',c:'var(--c-plans)'}, check:{label:'Balance check',c:'var(--c-check)'}
+  docs:{label:'Documents',c:'var(--c-docs)'}, money:{label:'Payments',c:'var(--c-money)'}, plans:{label:'Plans',c:'var(--c-plans)'},
+  check:{label:'Balance check',c:'var(--c-check)'}
 };
 const EVERY_M = [[0,'One-off'],[-1,'As needed'],[1,'Every month'],[2,'Every 2 months'],[3,'Every 3 months'],[4,'Every 4 months'],[6,'Every 6 months'],[12,'Every year'],[24,'Every 2 years'],[36,'Every 3 years']];
 const TRADES = ['AC & ventilation','Plumbing','Electrical','Pest control','Cleaning','Water tank','Water heater & solar','Pool','Garden & irrigation','Painting','Handyman','Appliances','Garage / dealer','Tyres','Car detailing','Other'].map(x=>[x,x]);
 const VERDICT = [['great','Would use again'],['ok','OK'],['avoid','Avoid']];
-const FKINDS = [['birthday','Birthday'],['anniversary','Anniversary'],['document','Document renewal'],['health','Health'],['school','School'],['other','Other']];
+const FKINDS = [['birthday','Birthday'],['anniversary','Anniversary'],['health','Health'],['school','School'],['other','Other']];
 const FREPEAT = [['none','Once'],['yearly','Every year']];
+const DKINDS = [['passport','Passport'],['eid','Emirates ID'],['visa','Residence visa'],['licence','Driving licence'],['healthcard','Health insurance card'],['birth','Birth certificate'],['marriage','Marriage certificate'],['carreg','Car registration'],['carins','Car insurance'],['property','Title deed / tenancy'],['warranty','Warranty'],['contract','Contract'],['other','Other']];
+const DREMIND = [[30,'30 days before'],[60,'60 days before'],[90,'90 days before'],[180,'6 months before']];
 const RKINDS = [['housing','Rent / mortgage'],['loan','Loans'],['utilities','Utilities & telecom'],['insurance','Insurance'],['school','School & childcare'],['subscription','Subscriptions'],['other','Other']];
 const RKC = {housing:'var(--c-money)',loan:'var(--c-family)',utilities:'var(--c-plans)',insurance:'var(--c-home)',school:'var(--c-check)',subscription:'var(--c-car)',other:'var(--muted)'};
 const REVERY = [[1,'Monthly'],[3,'Quarterly'],[6,'Every 6 months'],[12,'Yearly']];
 const PCATS = [['home','Home'],['car','Car'],['family','Family'],['travel','Travel'],['finance','Savings & finance'],['education','Education'],['other','Other']];
 const PSTATUS = [['idea','Idea'],['planned','Planned'],['active','In progress'],['done','Done']];
 const CARDOCS = [['insuranceRenewal','Insurance renewal'],['registrationExpiry','Registration renewal'],['warrantyUntil','Warranty ends'],['serviceContractUntil','Service contract ends']];
-const COLS = ['cars','maint','history','companies','family','recurring','balances','plans'];
+const COLS = ['cars','maint','history','companies','family','docs','recurring','balances','plans','roster'];
 const VIEWS = ['overview','calendar','home','car','family','money','plans'];
-const DEF_SETTINGS = {currency:'AED', checkDay:1, income:null};
+const DEF_SETTINGS = {currency:'AED', checkDay:1, income:null, rosterIgnore:'OFF, LVE, LEAVE, AL, REST, ADO, DO'};
 
-/* ---------- storage: everything lives on this iPhone ---------- */
+/* ---------- state: everything lives on this iPhone ---------- */
 const KEY='householdLogbook.v1', UKEY='householdLogbook.ui';
-const S = { data:{}, settings:Object.assign({},DEF_SETTINGS), view:'overview', calMonth:null, calSel:null,
-  calFilter:{home:true,car:true,family:true,money:true,plans:true,check:true}, carSel:null };
+const S = { data:{}, settings:Object.assign({},DEF_SETTINGS), settingsU:0, del:{}, view:'overview', calMonth:null, calSel:null,
+  calFilter:{home:true,car:true,family:true,docs:true,money:true,plans:true,check:true}, carSel:null, famSeg:'dates', duty:{} };
 COLS.forEach(c => S.data[c] = []);
 let storageOK = true, updAvail = false;
 function normalize(o){
   if(!o || typeof o!=='object') return null;
   const d = o.data && typeof o.data==='object' ? o.data : o;
-  const out={}; let any=false;
-  COLS.forEach(c=>{ const a=d[c]; if(Array.isArray(a)) any=true; out[c]=Array.isArray(a) ? a.filter(x=>x && typeof x==='object' && typeof x.id==='string') : []; });
+  const data={}; let any=false;
+  COLS.forEach(c=>{ const a=d[c]; if(Array.isArray(a)) any=true; data[c]=Array.isArray(a) ? a.filter(x=>x && typeof x==='object' && typeof x.id==='string').map(x=>Object.assign({},x,{u:+x.u||0})) : []; });
   if(!any) return null;
-  const st=Object.assign({},DEF_SETTINGS, o.settings && typeof o.settings==='object' ? o.settings : {});
-  return {data:out, settings:st};
+  const settings=Object.assign({},DEF_SETTINGS, o.settings && typeof o.settings==='object' ? o.settings : {});
+  const del={}, od=o.del && typeof o.del==='object' ? o.del : {};
+  COLS.forEach(c=>{ const m=od[c], mm={}; if(m && typeof m==='object') Object.keys(m).forEach(id=>{ if(+m[id]>0) mm[id]=+m[id]; }); del[c]=mm; });
+  return {data, settings, settingsU:+o.settingsU||0, del};
 }
-function snapshot(){ return {app:'household-logbook', v:1, data:S.data, settings:S.settings}; }
+const localState = () => ({data:S.data, settings:S.settings, settingsU:S.settingsU, del:S.del});
+function snapshot(){ return Object.assign({app:'household-logbook', v:2}, localState()); }
+function stateKey(st){
+  const d={}; COLS.forEach(c=>{ d[c]=(st.data[c]||[]).slice().sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0); });
+  const del={}; COLS.forEach(c=>{ const m=(st.del||{})[c]; if(m && Object.keys(m).length) del[c]=m; });
+  return stable({data:d, settings:st.settings, su:+st.settingsU||0, del});
+}
 function persist(){
   try{ localStorage.setItem(KEY, JSON.stringify(snapshot())); storageOK=true; }
   catch(e){ storageOK=false; toast('Couldn’t save on this iPhone. Storage may be full.',4000); }
@@ -396,59 +470,73 @@ function loadAll(){
   if(!raw) return false;
   let o=null; try{ o=normalize(JSON.parse(raw)); }catch(e){}
   if(!o){ try{ localStorage.setItem(KEY+'.unreadable', raw); }catch(e){} return false; }
-  S.data=o.data; S.settings=o.settings; return true;
+  applyState(o,false,true); return true;
+}
+function applyState(st, keepUi, quiet){
+  S.data=st.data; S.settings=st.settings; S.settingsU=+st.settingsU||0; S.del=st.del||{};
+  COLS.forEach(c=>{ if(!S.data[c]) S.data[c]=[]; if(!S.del[c]) S.del[c]={}; });
+  if(!quiet){ persist(); render(); }
 }
 function loadUi(){ try{ return JSON.parse(localStorage.getItem(UKEY)||'{}')||{}; }catch(e){ return {}; } }
 function saveUi(p){ try{ localStorage.setItem(UKEY, JSON.stringify(Object.assign(loadUi(),p))); }catch(e){} }
-function addDoc(col,data){ const id=uid(); S.data[col].push(Object.assign({id},data)); return id; }
-function updDoc(col,id,patch){ const x=find(col,id); if(x) Object.assign(x,patch); }
-function delDoc(col,id){ S.data[col]=S.data[col].filter(x=>x.id!==id); }
-function commit(){ persist(); render(); cloudNudge(); }
+function addDoc(col,data,id){ id=id||uid(); if(S.del[col]) delete S.del[col][id]; S.data[col].push(Object.assign({},data,{id, u:now()})); return id; }
+function updDoc(col,id,patch){ const x=find(col,id); if(x) Object.assign(x,patch,{u:now()}); }
+function delDoc(col,id){ S.data[col]=S.data[col].filter(x=>x.id!==id); (S.del[col]=S.del[col]||{})[id]=now(); }
+function setSettings(nv){ S.settings=nv; S.settingsU=now(); }
+function commit(){ persist(); render(); scheduleSync(8000); }
+
+/* Two phones edit the same logbook: the newer version of each entry wins, deletions travel as markers. */
+function mergeStates(a,b){
+  const cutoff=now()-180*86400000, data={}, del={};
+  COLS.forEach(c=>{
+    const td=Object.assign({}, (a.del||{})[c]||{}), tb=(b.del||{})[c]||{};
+    Object.keys(tb).forEach(id=>{ if(!td[id] || tb[id]>td[id]) td[id]=tb[id]; });
+    const map=new Map();
+    (a.data[c]||[]).forEach(r=>map.set(r.id,r));
+    (b.data[c]||[]).forEach(r=>{ const x=map.get(r.id); const ru=+r.u||0, xu=x?(+x.u||0):-1;
+      if(!x || ru>xu || (ru===xu && stable(r)>stable(x))) map.set(r.id,r); });
+    const rows=[]; map.forEach((r,id)=>{ if(td[id] && td[id]>=(+r.u||0)) return; rows.push(r); });
+    data[c]=rows;
+    const keep={}; Object.keys(td).forEach(id=>{ if(td[id]>cutoff) keep[id]=td[id]; }); del[c]=keep;
+  });
+  const au=+a.settingsU||0, bu=+b.settingsU||0;
+  const useA = au>bu || (au===bu && stable(a.settings)>=stable(b.settings));
+  return {data, settings: useA?a.settings:b.settings, settingsU:Math.max(au,bu), del};
+}
+/* A restored version becomes the newest edit, so it also wins on the other phone. */
+function restoreState(old){
+  const t=now(), del=JSON.parse(JSON.stringify(S.del||{})), data={};
+  COLS.forEach(c=>{
+    const keep=new Set(old.data[c].map(r=>r.id)); del[c]=del[c]||{};
+    S.data[c].forEach(r=>{ if(!keep.has(r.id)) del[c][r.id]=t; });
+    data[c]=old.data[c].map(r=>{ delete del[c][r.id]; return Object.assign({},r,{u:t}); });
+  });
+  return {data, settings:old.settings, settingsU:t, del};
+}
 
 /* First start: your car and the villa maintenance schedule from the DLP homeowner's manual. */
 function seed(){
   const t=iso(today()), src='From the DLP homeowner’s manual.';
-  addDoc('cars',{make:'Volvo', model:'XC60', year:2025, trim:'Full option', dealer:'Al-Futtaim', created:t});
-  const m=(title,every,steps,notes)=>addDoc('maint',{area:'home', title, everyMonths:every, dueDate: every>0 ? t : null, steps, notes: notes?notes+' '+src:src, created:t});
-  m('AC filters, grills & outdoor units', 4, [
-    'Clean the AC filters (AC off)',
-    'Clean the grills and diffusers (AC off)',
-    'Check the condensate pipe and drip tray: no leaks, water drains freely (AC off)',
-    'Listen for abnormal noise from the FCU units (AC on)',
-    'Check the ducts for dust and debris; clean them or get them serviced (AC off)',
-    'Clean the outdoor condenser and fan (AC off)',
-    'Sight glass near the outdoor unit (AC on): liquid steady, no bubbles. Bubbles can mean low refrigerant, so call a technician'
-  ]);
-  m('Water heater inspection', 6, [
-    'Check the system for leaks, damage or wear: panels, pipes, insulation and connections',
-    'Check the body for leaks and corrosion'
-  ]);
-  m('Water heater yearly service', 12, [
-    'Flush the tank to remove sediment',
-    'Test the temperature and pressure relief (TPR) valve',
-    'Check the thermostat is set to about 50 °C'
-  ]);
-  m('Water tank & pump checks', 6, [
-    'Inspect the tank for leaks, cracks, rust or corrosion',
-    'Check the float valve opens and closes at the set water level',
-    'Check the water pump: no abnormal noise or frequent on-off cycling, pressure 2–3 bar'
-  ]);
-  m('Water tank cleaning & water test', 12, [
-    'Drain and clean the inside of the tank (sediment, algae, bacteria)',
-    'Test the water quality: bacteria, pH and other impurities'
-  ], 'Professional help recommended.');
-  m('Clean the solar water heater panels', -1, ['Wash the collectors with a soft cloth or sponge, mild soap and water']);
-  m('Test the AC from the thermostat', -1, ['With the AC on: the fan runs at the set speed and the cooling matches the set temperature']);
-  m('Before a long trip away', -1, [
-    'Switch off the electric water heater at its breaker or isolator (long summer breaks)',
-    'Turn off the water pump and close the tank gate valve, only if there is no irrigated garden'
-  ]);
+  addDoc('cars',{make:'Volvo', model:'XC60', year:2025, trim:'Full option', dealer:'Al-Futtaim', created:t},'seed-volvo');
+  const m=(id,title,every,steps,notes)=>addDoc('maint',{area:'home', title, everyMonths:every, dueDate: every>0 ? t : null, steps, notes: notes?notes+' '+src:src, created:t},'seed-'+id);
+  m('ac','AC filters, grills & outdoor units', 4, ['Clean the AC filters (AC off)','Clean the grills and diffusers (AC off)','Check the condensate pipe and drip tray: no leaks, water drains freely (AC off)','Listen for abnormal noise from the FCU units (AC on)','Check the ducts for dust and debris; clean them or get them serviced (AC off)','Clean the outdoor condenser and fan (AC off)','Sight glass near the outdoor unit (AC on): liquid steady, no bubbles. Bubbles can mean low refrigerant, so call a technician']);
+  m('wh6','Water heater inspection', 6, ['Check the system for leaks, damage or wear: panels, pipes, insulation and connections','Check the body for leaks and corrosion']);
+  m('wh12','Water heater yearly service', 12, ['Flush the tank to remove sediment','Test the temperature and pressure relief (TPR) valve','Check the thermostat is set to about 50 °C']);
+  m('wt6','Water tank & pump checks', 6, ['Inspect the tank for leaks, cracks, rust or corrosion','Check the float valve opens and closes at the set water level','Check the water pump: no abnormal noise or frequent on-off cycling, pressure 2–3 bar']);
+  m('wt12','Water tank cleaning & water test', 12, ['Drain and clean the inside of the tank (sediment, algae, bacteria)','Test the water quality: bacteria, pH and other impurities'], 'Professional help recommended.');
+  m('solar','Clean the solar water heater panels', -1, ['Wash the collectors with a soft cloth or sponge, mild soap and water']);
+  m('thermo','Test the AC from the thermostat', -1, ['With the AC on: the fan runs at the set speed and the cooling matches the set temperature']);
+  m('trip','Before a long trip away', -1, ['Switch off the electric water heater at its breaker or isolator (long summer breaks)','Turn off the water pump and close the tank gate valve, only if there is no irrigated garden']);
+  COLS.forEach(c=>S.data[c].forEach(r=>{ r.u=1; }));
 }
 
 /* ---------- small helpers ---------- */
 const find = (col,id) => id ? S.data[col].find(x => x.id === id) : undefined;
 const carName = c => c ? (c.nickname || [c.make, c.model].filter(Boolean).join(' ') || 'Car') : '';
+const docTitle = d => d.title || lab(DKINDS,d.kind) || 'Document';
 const everyText = m => { m=+m||0; if(m===-1) return 'As needed'; if(!m) return 'One-off'; return lab(EVERY_M,m) || ('Every '+m+' months'); };
+const filesOf = r => Array.isArray(r && r.files) ? r.files.filter(f=>f && typeof f.id==='string') : [];
+const fileBit = r => { const n=filesOf(r).length; return n ? n+' file'+(n>1?'s':'') : null; };
 const RANK = {over:3, soon:2, ok:1};
 const worse = (a,b) => !a ? b : !b ? a : (RANK[b.cls] > RANK[a.cls] ? b : a);
 function dateSt(d){
@@ -462,7 +550,15 @@ function dateSt(d){
   if(mo < 24) return {cls:'ok', txt:'In '+mo+' months'};
   return {cls:'ok', txt:'In '+Math.round(n/365.25)+' years'};
 }
+function docSt(d){
+  const e=parse(d.expires); if(!e) return null;
+  const n=dayDiff(today(),e), w=+d.remindDays||60;
+  if(n<0) return {cls:'over', txt:'Expired'};
+  if(n<=w) return {cls:'soon', txt: n===0?'Expires today':'Expires in '+n+' days'};
+  return {cls:'ok', txt:'Valid'};
+}
 const chip = st => st ? '<span class="chip '+st.cls+'">'+esc(st.txt)+'</span>' : '';
+const dutyChip = d => d && S.duty[iso(d)] ? '<span class="chip n">On duty</span>' : '';
 function maintStatus(m){
   const d = +m.everyMonths===-1 && !m.dueDate ? null : parse(m.dueDate); const st = d ? dateSt(d) : null; let kst = null;
   if(m.area === 'car' && m.dueKm){
@@ -511,6 +607,144 @@ function periods(){
   return out;
 }
 
+/* ---------- roster ---------- */
+function ignoreList(){ return String(S.settings.rosterIgnore||'').split(/[,;\n]/).map(s=>s.trim().toUpperCase()).filter(Boolean); }
+function isDuty(ev, ign){ const t=String(ev.t||'').toUpperCase(); return !ign.some(w=>new RegExp('(^|[^A-Z0-9])'+w.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')+'($|[^A-Z0-9])').test(t)); }
+function buildDuty(){
+  const map={}, ign=ignoreList();
+  S.data.roster.forEach(ev=>{
+    if(!(ev.s>0) || !isDuty(ev,ign)) return;
+    const e=Math.max(ev.s+1, ev.e||ev.s+1); let d=new Date(ev.s); d=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+    for(let i=0;i<40 && d.getTime()<e;i++){ const k=iso(d); (map[k]=map[k]||[]).push(ev); d=addDays(d,1); }
+  });
+  Object.keys(map).forEach(k=>map[k].sort((a,b)=>a.s-b.s));
+  S.duty=map;
+}
+const dutyShort = evs => String(evs[0].t||'Duty').replace(/\s+/g,' ').slice(0,14);
+function icsUnesc(v){ return String(v).replace(/\\n/gi,'\n').replace(/\\([,;\\])/g,'$1'); }
+function tzOffset(t,tz){ const f=new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}); const p={}; f.formatToParts(new Date(t)).forEach(x=>p[x.type]=x.value); return Date.UTC(+p.year,+p.month-1,+p.day,(+p.hour)%24,+p.minute,+p.second)-t; }
+function zonedToUtc(Y,Mo,D,h,mi,s,tz){ const g=Date.UTC(Y,Mo,D,h,mi,s); try{ const o1=tzOffset(g,tz); let t=g-o1; const o2=tzOffset(t,tz); if(o2!==o1) t=g-o2; return t; }catch(e){ return new Date(Y,Mo,D,h,mi,s).getTime(); } }
+function icsTime(v,p){
+  let m=v.match(/^(\d{4})(\d{2})(\d{2})$/); if(m) return {t:new Date(+m[1],+m[2]-1,+m[3]).getTime(), allDay:true};
+  m=v.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?(Z)?$/); if(!m) return null;
+  const Y=+m[1],Mo=+m[2]-1,D=+m[3],h=+m[4],mi=+m[5],sec=+(m[6]||0);
+  if(m[7]) return {t:Date.UTC(Y,Mo,D,h,mi,sec)};
+  if(p.TZID) return {t:zonedToUtc(Y,Mo,D,h,mi,sec,p.TZID)};
+  return {t:new Date(Y,Mo,D,h,mi,sec).getTime()};
+}
+function parseIcs(text){
+  const lines=String(text).replace(/\r?\n[ \t]/g,'').split(/\r?\n/), out=[]; let cur=null;
+  for(const raw of lines){
+    const line=raw.trim();
+    if(line==='BEGIN:VEVENT'){ cur={}; continue; }
+    if(line==='END:VEVENT'){ if(cur && cur.s!=null){ if(cur.e==null) cur.e=cur.allDay ? cur.s+86400000 : cur.s+3600000; out.push(cur); } cur=null; continue; }
+    if(!cur) continue;
+    const i=line.indexOf(':'); if(i<0) continue;
+    const parts=line.slice(0,i).split(';'), name=parts[0].toUpperCase(), val=line.slice(i+1), p={};
+    parts.slice(1).forEach(x=>{ const j=x.indexOf('='); if(j>0) p[x.slice(0,j).toUpperCase()]=x.slice(j+1).replace(/^"|"$/g,''); });
+    if(name==='SUMMARY') cur.t=icsUnesc(val).trim();
+    else if(name==='LOCATION') cur.l=icsUnesc(val).trim();
+    else if(name==='UID') cur.uid=val;
+    else if(name==='DTSTART'||name==='DTEND'){ const r=icsTime(val,p); if(r){ cur[name==='DTSTART'?'s':'e']=r.t; if(r.allDay && name==='DTSTART') cur.allDay=true; } }
+  }
+  return out;
+}
+function importRoster(text){
+  const evs=parseIcs(text).filter(e=>e.s>0);
+  if(!evs.length) return 0;
+  const lo=Math.min(...evs.map(e=>e.s)), hi=Math.max(...evs.map(e=>e.e||e.s));
+  const ids=new Set();
+  evs.forEach(e=>{
+    const id='r'+strHash((e.uid||'')+'|'+e.s+'|'+(e.t||'')).replace('.','');
+    ids.add(id);
+    const data={s:e.s, e:e.e||e.s, t:e.t||'', l:e.l||'', ad:!!e.allDay};
+    const x=find('roster',id);
+    if(x){ if(x.e!==data.e || x.t!==data.t || x.l!==data.l) updDoc('roster',id,data); }
+    else addDoc('roster',data,id);
+  });
+  S.data.roster.filter(r=>!ids.has(r.id) && r.s<=hi && (r.e||r.s)>=lo).map(r=>r.id).forEach(id=>delDoc('roster',id));
+  return evs.length;
+}
+
+/* ---------- files: photos, scans and PDFs, kept in the phone's database ---------- */
+let idbP=null;
+function idb(){
+  if(idbP) return idbP;
+  idbP=new Promise((res,rej)=>{ const r=indexedDB.open('householdFiles',1); r.onupgradeneeded=()=>r.result.createObjectStore('files',{keyPath:'id'}); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); });
+  return idbP;
+}
+function tx(mode,fn){ return idb().then(db=>new Promise((res,rej)=>{ const t=db.transaction('files',mode), rq=fn(t.objectStore('files')); let out; if(rq) rq.onsuccess=()=>{ out=rq.result; }; t.oncomplete=()=>res(out); t.onerror=()=>rej(t.error); t.onabort=()=>rej(t.error); })); }
+const fileGet = id => tx('readonly',st=>st.get(id)).catch(()=>null);
+const filePut = rec => tx('readwrite',st=>st.put(rec));
+const fileDel = id => tx('readwrite',st=>st.delete(id)).catch(()=>{});
+const fileKeys = () => tx('readonly',st=>st.getAllKeys()).catch(()=>[]);
+const thumbCache = new Map();
+function readAsDataURL(blob){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(String(r.result)); r.onerror=()=>rej(r.error); r.readAsDataURL(blob); }); }
+function loadImage(src){ return new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=()=>rej(new Error('image')); im.src=src; }); }
+function dataToBlob(data){ const i=data.indexOf(','), meta=data.slice(5,i), b=atob(data.slice(i+1)), u=new Uint8Array(b.length); for(let k=0;k<b.length;k++) u[k]=b.charCodeAt(k); return new Blob([u],{type:meta.split(';')[0]}); }
+function scaled(src, max, q){ const sc=Math.min(1,max/Math.max(src.width,src.height)), c=document.createElement('canvas'); c.width=Math.max(1,Math.round(src.width*sc)); c.height=Math.max(1,Math.round(src.height*sc)); c.getContext('2d').drawImage(src,0,0,c.width,c.height); return c.toDataURL('image/jpeg',q); }
+/* Paper scans: stretch the levels so the page goes white and the text dark. */
+function enhanceDoc(g,w,h){
+  const img=g.getImageData(0,0,w,h), d=img.data, hist=new Uint32Array(256);
+  for(let i=0;i<d.length;i+=16) hist[(d[i]*0.299+d[i+1]*0.587+d[i+2]*0.114)|0]++;
+  const total=hist.reduce((a,b)=>a+b,0); let acc=0, lo=0, hi=255;
+  for(let v=0;v<256;v++){ acc+=hist[v]; if(acc>=total*0.02){ lo=v; break; } }
+  acc=0; for(let v=255;v>=0;v--){ acc+=hist[v]; if(acc>=total*0.25){ hi=v; break; } }
+  if(hi-lo<40) return;
+  const k=255/(hi-lo);
+  for(let i=0;i<d.length;i+=4){ for(let j=0;j<3;j++){ let v=(d[i+j]-lo)*k; d[i+j]=v<0?0:v>255?255:v; } }
+  g.putImageData(img,0,0);
+}
+async function processImage(file, enhance){
+  const url=URL.createObjectURL(file); let im;
+  try{ im=await loadImage(url); } finally { setTimeout(()=>URL.revokeObjectURL(url),2000); }
+  const W0=im.naturalWidth, H0=im.naturalHeight, sc=Math.min(1,2000/Math.max(W0,H0));
+  const c=document.createElement('canvas'); c.width=Math.round(W0*sc); c.height=Math.round(H0*sc);
+  const g=c.getContext('2d'); g.drawImage(im,0,0,c.width,c.height);
+  if(enhance) enhanceDoc(g,c.width,c.height);
+  return {type:'image/jpeg', data:c.toDataURL('image/jpeg',0.82), thumb:scaled(c,320,0.72)};
+}
+let pdfP=null;
+function loadPdfJs(){
+  if(window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  if(pdfP) return pdfP;
+  pdfP=new Promise((res,rej)=>{ const sc=document.createElement('script'); sc.src='lib/pdf.js';
+    sc.onload=()=>{ if(window.pdfjsLib){ window.pdfjsLib.GlobalWorkerOptions.workerSrc='lib/pdf.worker.js'; res(window.pdfjsLib); } else rej(new Error('pdf')); };
+    sc.onerror=()=>{ pdfP=null; rej(new Error('pdf')); }; document.head.appendChild(sc); });
+  return pdfP;
+}
+async function pdfDoc(data){ const lib=await loadPdfJs(); const bin=atob(data.slice(data.indexOf(',')+1)), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return lib.getDocument({data:u}).promise; }
+async function pdfThumb(data){ try{ const doc=await pdfDoc(data), pg=await doc.getPage(1), vp=pg.getViewport({scale:1}), s=320/Math.max(vp.width,vp.height), v2=pg.getViewport({scale:s}), c=document.createElement('canvas'); c.width=Math.ceil(v2.width); c.height=Math.ceil(v2.height); await pg.render({canvasContext:c.getContext('2d'),viewport:v2}).promise; return c.toDataURL('image/jpeg',0.72); }catch(e){ return null; } }
+async function thumbFor(type,data){ if(type==='application/pdf') return pdfThumb(data); try{ return scaled(await loadImage(data),320,0.72); }catch(e){ return null; } }
+async function addFile(file, enhance){
+  const id='f'+uid(), name=file.name||'file';
+  let rec;
+  if(file.type==='application/pdf' || /\.pdf$/i.test(name)){
+    if(file.size>15*1048576) throw new Error('That PDF is over 15 MB.');
+    const data=await readAsDataURL(file); rec={id, type:'application/pdf', name, data:'data:application/pdf;base64,'+data.slice(data.indexOf(',')+1), thumb:null};
+    rec.thumb=await pdfThumb(rec.data);
+  } else if(/^image\//.test(file.type) || /\.(jpe?g|png|heic|webp)$/i.test(name)){
+    const p=await processImage(file, enhance); rec={id, type:p.type, name:name.replace(/\.[^.]+$/,'')+'.jpg', data:p.data, thumb:p.thumb};
+  } else throw new Error('Only photos and PDFs can be added.');
+  rec.created=now(); await filePut(rec); if(rec.thumb) thumbCache.set(id,rec.thumb);
+  return {id, t:rec.type, n:rec.name};
+}
+function allFileRefs(){ const m=new Map(); COLS.forEach(c=>S.data[c].forEach(r=>filesOf(r).forEach(f=>m.set(f.id,f)))); return m; }
+function findFileRef(id){ if(SH && SH.files){ const f=SH.files.find(x=>x.id===id); if(f) return f; } return allFileRefs().get(id); }
+async function cleanFiles(){
+  const refs=allFileRefs(), keys=await fileKeys();
+  for(const k of keys){ if(refs.has(k)) continue; const f=await fileGet(k); if(f && now()-(f.created||0)>3*86400000) await fileDel(k); }
+}
+function hydrateThumbs(root){
+  (root||document).querySelectorAll('img[data-thumb]').forEach(img=>{
+    const id=img.getAttribute('data-thumb'); img.removeAttribute('data-thumb');
+    const set=src=>{ if(src){ img.src=src; img.hidden=false; const t=img.parentElement && img.parentElement.querySelector('.ph'); if(t) t.remove(); } };
+    if(thumbCache.has(id)) return set(thumbCache.get(id));
+    fileGet(id).then(f=>{ if(!f) return; if(f.thumb){ thumbCache.set(id,f.thumb); set(f.thumb); } else if(f.type!=='application/pdf'){ thumbFor(f.type,f.data).then(t=>{ if(t){ thumbCache.set(id,t); f.thumb=t; filePut(f).catch(()=>{}); set(t); } }); } });
+  });
+}
+const thumbHtml = (ref, cls) => '<span class="'+cls+'"><img data-thumb="'+esc(ref.id)+'" alt="" hidden><span class="ph">'+(ref.t==='application/pdf'?'PDF':'…')+'</span></span>';
+
 /* ---------- small renderers ---------- */
 const tag = cat => '<span class="tag" style="--cc:'+CAT[cat].c+'"><i></i>'+CAT[cat].label+'</span>';
 const emptyBox = (title, text, btn) => '<div class="empty"><b>'+esc(title)+'</b>'+esc(text)+(btn ? '<br>'+btn : '')+'</div>';
@@ -518,9 +752,9 @@ const editAct = (col,id) => 'data-act="edit" data-col="'+col+'" data-id="'+esc(i
 const addBtn = (form, label, extra, ghost) => '<button class="btn sm'+(ghost?' ghost':'')+'" type="button" data-act="add" data-form="'+form+'"'+(extra||'')+'>'+esc(label)+'</button>';
 
 function backupNote(){
-  if(cloud.on){ return cloud.kind==='auth'||cloud.kind==='access' ? '<div class="note"><span class="sp">Online backup needs attention: '+esc(cloud.err)+'</span><button class="btn sm" type="button" data-act="cloud">Fix it</button></div>' : ''; }
-  const ui=loadUi(); if(ui.backupNoteUntil && Date.now()<ui.backupNoteUntil) return '';
-  return '<div class="note info"><span class="sp">Your logbook is stored only on this iPhone. Turn on online backup so it’s safe if the phone is lost or the app is removed.</span><button class="btn sm" type="button" data-act="cloud">Set up</button><button class="lnk" type="button" data-act="notenow">Not now</button></div>';
+  if(cloud.on){ return cloud.kind==='auth'||cloud.kind==='access' ? '<div class="note"><span class="sp">Sync needs attention: '+esc(cloud.err)+'</span><button class="btn sm" type="button" data-act="cloud">Fix it</button></div>' : ''; }
+  const ui=loadUi(); if(ui.backupNoteUntil && now()<ui.backupNoteUntil) return '';
+  return '<div class="note info"><span class="sp">Your logbook is stored only on this iPhone. Turn on Sync & backup so it’s safe, and so a second iPhone can share it.</span><button class="btn sm" type="button" data-act="cloud">Set up</button><button class="lnk" type="button" data-act="notenow">Not now</button></div>';
 }
 function dueList(h){
   const t=today(), lim=addDays(t,h), out=[];
@@ -533,6 +767,7 @@ function dueList(h){
   });
   S.data.cars.forEach(c=>CARDOCS.forEach(([k,l])=>{ const d=parse(c[k]); if(d && d<=addDays(t,60)) out.push({d, cat:'car', title:l, sub:carName(c), st:dateSt(d), act:editAct('cars',c.id)}); }));
   S.data.family.forEach(f=>{ const d=famNext(f); if(d && d<=lim) out.push({d, cat:'family', title:f.title, sub:[f.who, lab(FKINDS,f.kind)].filter(Boolean).join(' · '), st:dateSt(d), act:editAct('family',f.id)}); });
+  S.data.docs.forEach(x=>{ const st=docSt(x); if(st && st.cls!=='ok') out.push({d:parse(x.expires), cat:'docs', title:docTitle(x)+' expires', sub:x.who||lab(DKINDS,x.kind), st:{cls:st.cls, txt:dateSt(parse(x.expires)).txt}, act:editAct('docs',x.id)}); });
   S.data.plans.forEach(p=>{ if(p.status==='done') return; const d=parse(p.targetDate); if(d && d<=addDays(t,60)) out.push({d, cat:'plans', title:p.title, sub:'Target date', st:dateSt(d), act:editAct('plans',p.id)}); });
   const nc = nextCheck();
   if(dayDiff(t,nc) <= 7) out.push({d:nc, cat:'check', title:'Record account balance', sub:'Monthly balance check', st:dateSt(nc), act:'data-act="add" data-form="balances"'});
@@ -541,7 +776,7 @@ function dueList(h){
 function dueRow(x){
   return '<div class="row"><button class="hit" type="button" '+x.act+'>'+
     '<span class="t">'+esc(x.title)+'</span>'+
-    '<span class="r"><span class="d">'+fDay(x.d)+'</span>'+chip(x.st)+'</span>'+
+    '<span class="r"><span class="d">'+fDay(x.d)+'</span>'+chip(x.st)+dutyChip(x.d)+'</span>'+
     '<span class="s">'+tag(x.cat)+(x.sub?' · '+esc(x.sub):'')+'</span>'+
   '</button>'+(x.done ? '<div class="side"><button class="btn sm ghost" type="button" data-act="done" data-id="'+esc(x.done)+'">Done</button></div>' : '')+'</div>';
 }
@@ -552,16 +787,17 @@ function maintRow(m){
   if(m.everyKm) bits.push('every '+num(m.everyKm)+' km');
   if(Array.isArray(m.steps) && m.steps.length) bits.push(m.steps.length+' step'+(m.steps.length>1?'s':''));
   if(co) bits.push(co.name);
+  const fb=fileBit(m); if(fb) bits.push(fb);
   const last = m.lastDone ? 'Last done '+fDate(parse(m.lastDone))+(m.lastCost?' · '+money(m.lastCost):'') : '';
   return '<div class="row"><button class="hit" type="button" '+editAct('maint',m.id)+'>'+
     '<span class="t">'+esc(m.title)+'</span>'+
-    '<span class="r">'+(asNeeded && !ms.d ? '' : '<span class="d">'+(ms.d?fDate(ms.d):'—')+'</span>')+chip(ms.st)+(ms.kst?chip(ms.kst):'')+'</span>'+
+    '<span class="r">'+(asNeeded && !ms.d ? '' : '<span class="d">'+(ms.d?fDate(ms.d):'—')+'</span>')+chip(ms.st)+(ms.kst?chip(ms.kst):'')+dutyChip(ms.d)+'</span>'+
     '<span class="s">'+esc(bits.join(' · '))+(last?'<br>'+esc(last):'')+'</span>'+
   '</button><div class="side"><button class="btn sm ghost" type="button" data-act="done" data-id="'+esc(m.id)+'">Done</button></div></div>';
 }
 function histRow(h){
   const co=find('companies',h.companyId);
-  const bits=[co?co.name:null, h.km?num(h.km)+' km':null, h.notes].filter(Boolean);
+  const bits=[co?co.name:null, h.km?num(h.km)+' km':null, fileBit(h), h.notes].filter(Boolean);
   return '<div class="row"><button class="hit" type="button" '+editAct('history',h.id)+'>'+
     '<span class="t">'+esc(h.title)+'</span>'+
     '<span class="r"><span class="d">'+fDate(parse(h.date))+'</span>'+(h.cost?'<span class="d muted">'+money(h.cost)+'</span>':'')+'</span>'+
@@ -570,6 +806,14 @@ function histRow(h){
 }
 
 /* ---------- views ---------- */
+function weekStrip(){
+  const t=today(), days=[0,1,2,3,4,5,6].map(i=>addDays(t,i));
+  const ev=Object.assign({}, calEvents(monthStart(days[0]),true), days[6].getMonth()!==t.getMonth() ? calEvents(monthStart(days[6]),true) : {});
+  return '<div class="week">'+days.map((d,i)=>{ const k=iso(d), e=ev[k]||[], du=S.duty[k];
+    const dots=e.slice(0,4).map(x=>'<i style="--cc:'+CAT[x.cat].c+'"></i>').join('')+(e.length>4?'<em>+</em>':'');
+    return '<button class="wk'+(i===0?' now':'')+(du?' duty':'')+'" type="button" data-act="weekday" data-d="'+k+'" aria-label="'+esc(fDay(d))+', '+e.length+' item'+(e.length===1?'':'s')+(du?', on duty':'')+'"><span class="wd2">'+(i===0?'Today':d.toLocaleDateString('en-GB',{weekday:'short'}))+'</span><span class="wn">'+d.getDate()+'</span><span class="dots">'+dots+'</span>'+(du?'<span class="dut">'+esc(dutyShort(du))+'</span>':'')+'</button>';
+  }).join('')+'</div>';
+}
 function vOverview(){
   const t=today(), due=dueList(45);
   const over=due.filter(x=>x.st && x.st.cls==='over').length, soon=due.filter(x=>x.st && x.st.cls==='soon').length;
@@ -580,9 +824,10 @@ function vOverview(){
   return backupNote()+
   '<section class="today"><div><div class="eyebrow">'+fDate(t,{weekday:'long'})+'</div><div class="big">'+fDate(t,{day:'numeric',month:'long',year:'numeric'})+'</div></div>'+
     '<div class="counts">'+(over?'<span class="chip over">'+over+' overdue</span>':'')+'<span class="chip '+(soon?'soon':'ok')+'">'+soon+' due within 30 days</span></div></section>'+
+  '<section class="sec"><div class="sh"><h2>This week</h2><span class="sp"></span><button class="lnk" type="button" data-act="tab" data-v="calendar">Calendar</button></div>'+weekStrip()+'</section>'+
   '<div class="cols">'+
-    '<section class="sec"><div class="sh"><h2>Coming up · 45 days</h2><span class="sp"></span><button class="lnk" type="button" data-act="tab" data-v="calendar">Calendar</button></div>'+
-      '<div class="panel">'+(due.length ? due.map(dueRow).join('') : emptyBox('Nothing due in the next 45 days','Maintenance, car renewals, family dates and plan targets show up here as they get close.'))+'</div></section>'+
+    '<section class="sec"><div class="sh"><h2>Coming up · 45 days</h2><span class="sp"></span><button class="lnk" type="button" data-act="icsall">Add to Calendar</button></div>'+
+      '<div class="panel">'+(due.length ? due.map(dueRow).join('') : emptyBox('Nothing due in the next 45 days','Maintenance, car renewals, family dates, documents and plan targets show up here as they get close.'))+'</div></section>'+
     '<aside class="sec"><div class="sh"><h2>Money · '+fDate(t,{month:'long'})+'</h2><span class="sp"></span><button class="lnk" type="button" data-act="tab" data-v="money">Details</button></div>'+
       '<div class="panel pad"><div class="stat"><div class="eyebrow">Mandatory base</div><div class="num"><small>'+cur()+'</small>'+num(monthlyBase())+'</div><div class="s">per month, from '+nAct+' recurring commitment'+(nAct===1?'':'s')+'</div></div>'+
       '<dl class="mini">'+
@@ -593,7 +838,7 @@ function vOverview(){
       '</dl><div>'+addBtn('balances','Record balance now')+'</div></div>'+
       '<div class="sec"><div class="sh"><h2>Quick add</h2></div><div class="quick">'+
         addBtn('maint','Home task',' data-area="home"',1)+addBtn('maint','Car service',' data-area="car"',1)+
-        addBtn('family','Family date','',1)+addBtn('recurring','Payment','',1)+addBtn('plans','Plan','',1)+'</div></div>'+
+        addBtn('docs','Document','',1)+addBtn('family','Family date','',1)+addBtn('recurring','Payment','',1)+addBtn('plans','Plan','',1)+'</div></div>'+
     '</aside>'+
   '</div>';
 }
@@ -611,13 +856,13 @@ function vHome(){
   '<section class="sec"><div class="sh"><h2>Companies</h2><span class="sp"></span>'+addBtn('companies','+ Add')+'</div>'+
     '<div class="panel">'+(comps.length ? comps.map(compRow).join('') : emptyBox('No companies saved','Keep the ones that did a good job, with their number, so you can book them again.', addBtn('companies','Add a company')))+'</div></section>'+
   '<section class="sec"><div class="sh"><h2>Service history</h2></div>'+
-    '<div class="panel">'+(hist.length ? hist.map(histRow).join('') : emptyBox('Nothing logged yet','Each time you mark a job done, it is recorded here with the date, company and cost.'))+'</div></section>';
+    '<div class="panel">'+(hist.length ? hist.map(histRow).join('') : emptyBox('Nothing logged yet','Each time you mark a job done, it is recorded here with the date, company, cost and any invoice photo.'))+'</div></section>';
 }
 function compRow(c){
   const used=S.data.maint.filter(m=>m.companyId===c.id && !m.done).map(m=>m.title);
   const jobs=S.data.history.filter(h=>h.companyId===c.id).length;
   const v = c.verdict ? '<span class="chip '+(c.verdict==='great'?'ok':c.verdict==='avoid'?'over':'n')+'">'+esc(lab(VERDICT,c.verdict))+'</span>' : '';
-  const bits=[c.trade, used.length?'Linked to '+used.join(', '):null, jobs?jobs+' job'+(jobs>1?'s':'')+' logged':null].filter(Boolean);
+  const bits=[c.trade, used.length?'Linked to '+used.join(', '):null, jobs?jobs+' job'+(jobs>1?'s':'')+' logged':null, fileBit(c)].filter(Boolean);
   return '<div class="row wrapx"><button class="hit" type="button" '+editAct('companies',c.id)+'>'+
     '<span class="t">'+esc(c.name)+'</span><span class="r">'+v+'</span>'+
     '<span class="s">'+esc(bits.join(' · ') || ' ')+'</span></button>'+
@@ -641,6 +886,7 @@ function vCar(){
   const items=S.data.maint.filter(m=>m.area==='car' && m.carId===car.id && !m.done).sort((a,b)=>(a.dueDate||'9').localeCompare(b.dueDate||'9'));
   const hist=S.data.history.filter(h=>h.carId===car.id).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,20);
   const spent=S.data.history.filter(h=>h.carId===car.id).reduce((s,h)=>s+(+h.cost||0),0);
+  const cf=filesOf(car);
   return '<section class="sec"><div class="sh"><h2>Cars</h2></div>'+sel+
   '<div class="panel"><div class="carhead"><div class="grow"><div class="eyebrow">'+esc([car.year, car.trim].filter(Boolean).join(' · ') || 'Car')+'</div><h3>'+esc(carName(car))+'</h3></div>'+
     '<div class="odo-box"><div class="eyebrow">Odometer</div>'+odoDigits(+car.odometer)+'<div class="s">'+(car.odometerDate?'Read '+fDate(parse(car.odometerDate)):'No reading yet')+'</div></div></div>'+
@@ -650,28 +896,53 @@ function vCar(){
       kv('Insurance renewal', dv(car.insuranceRenewal))+kv('Registration renewal', dv(car.registrationExpiry))+
       kv('Warranty ends', dv(car.warrantyUntil))+kv('Service contract ends', dv(car.serviceContractUntil))+
     '</dl>'+
+    (cf.length ? '<div class="foot att">'+cf.map(f=>'<button class="att-t" type="button" data-act="viewfile" data-id="'+esc(f.id)+'" aria-label="Open '+esc(f.n)+'">'+thumbHtml(f,'att-in')+'</button>').join('')+'</div>' : '')+
     '<div class="foot"><button class="btn sm" type="button" data-act="odo" data-id="'+esc(car.id)+'">Update km</button><button class="btn sm ghost" type="button" '+editAct('cars',car.id)+'>Edit car details</button></div>'+
   '</div></section>'+
   '<section class="sec"><div class="sh"><h2>Services</h2><span class="sp"></span>'+addBtn('maint','+ Add',' data-area="car"')+'</div>'+
     '<p class="lead">Give each service a date, a km reading, or both. Whichever comes first sets the status.</p>'+
     '<div class="panel">'+(items.length ? items.map(maintRow).join('') : emptyBox('No services scheduled','Add the next scheduled service, tyres, battery or a detailing.', addBtn('maint','Add a service',' data-area="car"')))+'</div></section>'+
   '<section class="sec"><div class="sh"><h2>Service history</h2><span class="sp"></span>'+(spent?'<span class="d muted">'+money(spent)+' in total</span>':'')+'</div>'+
-    '<div class="panel">'+(hist.length ? hist.map(histRow).join('') : emptyBox('Nothing logged yet','Mark a service done to record the date, km, garage and cost.'))+'</div></section>';
+    '<div class="panel">'+(hist.length ? hist.map(histRow).join('') : emptyBox('Nothing logged yet','Mark a service done to record the date, km, garage, cost and invoice.'))+'</div></section>';
 }
 
 function vFamily(){
+  const seg='<div class="seg2" role="group" aria-label="Family"><button type="button" data-act="famseg" data-v="dates" aria-pressed="'+(S.famSeg!=='docs')+'">Dates</button><button type="button" data-act="famseg" data-v="docs" aria-pressed="'+(S.famSeg==='docs')+'">Documents</button></div>';
+  return seg+(S.famSeg==='docs' ? vDocs() : vDates());
+}
+function vDates(){
   const list=S.data.family.map(f=>({f, d:famNext(f)})).sort((a,b)=>(a.d||Infinity)-(b.d||Infinity));
   const row = ({f,d}) => {
     const orig=parse(f.date); let extra='';
     if(f.repeat==='yearly' && orig && d && d.getFullYear()>orig.getFullYear()){ const yrs=d.getFullYear()-orig.getFullYear(); extra = f.kind==='birthday' ? 'turns '+yrs : f.kind==='anniversary' ? yrs+' years' : ''; }
     const bits=[f.who, lab(FKINDS,f.kind), f.repeat==='yearly'?'every year':null, extra].filter(Boolean);
     return '<div class="row"><button class="hit" type="button" '+editAct('family',f.id)+'>'+
-      '<span class="t">'+esc(f.title)+'</span><span class="r"><span class="d">'+fDay(d)+'</span>'+(d?chip(dateSt(d)):'')+'</span>'+
+      '<span class="t">'+esc(f.title)+'</span><span class="r"><span class="d">'+fDay(d)+'</span>'+(d?chip(dateSt(d)):'')+dutyChip(d)+'</span>'+
       '<span class="s">'+esc(bits.join(' · ') || ' ')+'</span></button></div>';
   };
   return '<section class="sec"><div class="sh"><h2>Family dates</h2><span class="sp"></span>'+addBtn('family','+ Add')+'</div>'+
-    '<p class="lead">Birthdays and anniversaries repeat every year. Use one-off dates for passport and ID renewals, school deadlines and appointments.</p>'+
-    '<div class="panel">'+(list.length ? list.map(row).join('') : emptyBox('No dates yet','Add birthdays, document renewals and appointments.', addBtn('family','Add a date')))+'</div></section>';
+    '<p class="lead">Birthdays and anniversaries repeat every year. Use one-off dates for school deadlines and appointments. Passports and IDs go under Documents.</p>'+
+    '<div class="panel">'+(list.length ? list.map(row).join('') : emptyBox('No dates yet','Add birthdays, anniversaries and appointments.', addBtn('family','Add a date')))+'</div></section>';
+}
+const mask = n => { n=String(n||'').replace(/\s+/g,''); return n.length>4 ? '•••• '+n.slice(-4) : n; };
+function docRow(x){
+  const st=docSt(x), e=parse(x.expires), f=filesOf(x)[0];
+  const bits=[docTitle(x)!==lab(DKINDS,x.kind)?lab(DKINDS,x.kind):null, x.number?mask(x.number):null, fileBit(x)].filter(Boolean);
+  return '<div class="row"><button class="hit th" type="button" '+editAct('docs',x.id)+'>'+
+    (f ? thumbHtml(f,'thumbx') : '<span class="thumbx">—</span>')+
+    '<span class="t">'+esc(docTitle(x))+'</span>'+
+    '<span class="r">'+(e?'<span class="d">'+fDate(e)+'</span>':'<span class="d muted">No expiry</span>')+chip(st)+'</span>'+
+    '<span class="s">'+esc(bits.join(' · ') || ' ')+'</span></button></div>';
+}
+function vDocs(){
+  const groups=new Map();
+  S.data.docs.slice().sort((a,b)=>(a.who||'~').localeCompare(b.who||'~') || docTitle(a).localeCompare(docTitle(b))).forEach(x=>{ const k=x.who||'Household'; if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(x); });
+  const soon=S.data.docs.filter(x=>{ const s=docSt(x); return s && s.cls!=='ok'; }).length;
+  return '<section class="sec"><div class="sh"><h2>Documents</h2><span class="sp"></span>'+addBtn('docs','+ Add')+'</div>'+
+    '<p class="lead">Passports, Emirates IDs, visas, licences and the rest, with a scan or photo of each. They’re flagged on Today when the expiry comes within the reminder you set.'+(soon?' '+soon+(soon===1?' needs':' need')+' attention now.':'')+'</p>'+
+    (groups.size ? [...groups].map(([k,list])=>'<div class="panel"><div class="grp"><span>'+esc(k)+'</span><span>'+list.length+'</span></div>'+list.map(docRow).join('')+'</div>').join('')
+      : '<div class="panel">'+emptyBox('No documents yet','Scan a passport or Emirates ID with the camera, or add a PDF from Files.', addBtn('docs','Add a document'))+'</div>')+
+  '</section>';
 }
 
 function vMoney(){
@@ -740,7 +1011,7 @@ function vPlans(){
     let need='';
     if(tgt && p.status!=='done'){ const rem=Math.max(0,tgt-saved); if(rem<=0) need='Fully funded'; else if(d && d>t) need=money(rem/Math.max(1,monthsBetween(t,d)))+' a month to get there'; }
     const stCls = p.status==='done'?'ok':p.status==='active'?'soon':'n';
-    const bits=[lab(PCATS,p.category), d ? (p.status==='done'?'target '+fMY(d):dateSt(d).txt.replace('In ','in ')) : 'no target date'].filter(Boolean);
+    const bits=[lab(PCATS,p.category), d ? (p.status==='done'?'target '+fMY(d):dateSt(d).txt.replace('In ','in ')) : 'no target date', fileBit(p)].filter(Boolean);
     return '<div class="row"><button class="hit" type="button" '+editAct('plans',p.id)+'>'+
       '<span class="t">'+esc(p.title)+'</span>'+
       '<span class="r"><span class="d">'+(d?fMY(d):'—')+'</span><span class="chip '+stCls+'">'+esc(lab(PSTATUS,p.status)||'Planned')+'</span></span>'+
@@ -753,29 +1024,34 @@ function vPlans(){
     '<div class="panel">'+(list.length ? list.map(row).join('') : emptyBox('No plans yet','A renovation, the next car, a savings goal, school fees ahead.', addBtn('plans','Add a plan')))+'</div></section>';
 }
 
-function calEvents(ms){
-  const me=new Date(ms.getFullYear(),ms.getMonth()+1,0), map={}, F=S.calFilter;
+function calEvents(ms, all){
+  const me=new Date(ms.getFullYear(),ms.getMonth()+1,0), map={}, F=all?null:S.calFilter, on=k=>!F||F[k];
   const add=(d,e)=>{ if(!d || d<ms || d>me) return; const k=iso(d); (map[k]=map[k]||[]).push(e); };
   S.data.maint.forEach(m=>{
     if(m.done) return; const d0=parse(m.dueDate); if(!d0) return;
-    const cat=m.area==='car'?'car':'home'; if(!F[cat]) return;
+    const cat=m.area==='car'?'car':'home'; if(!on(cat)) return;
     const car=cat==='car'?find('cars',m.carId):null, every=+m.everyMonths||0;
     const base={cat, title:m.title, sub: car?carName(car)+' · service':everyText(every), ref:['maint',m.id]};
     if(every>0){ for(let k=0;k<600;k++){ const d=addMonths(d0,k*every); if(d>me) break; if(d>=ms) add(d,Object.assign({},base,{proj:k>0})); } }
     else add(d0,base);
   });
-  if(F.car) S.data.cars.forEach(c=>CARDOCS.forEach(([k,l])=>add(parse(c[k]),{cat:'car',title:l,sub:carName(c),ref:['cars',c.id]})));
-  if(F.family) S.data.family.forEach(f=>{ const d=parse(f.date); if(!d) return; if(f.repeat==='yearly'){ const o=yearDate(d,ms.getFullYear()); if(o>=d) add(o,{cat:'family',title:f.title,sub:[f.who,'every year'].filter(Boolean).join(' · '),ref:['family',f.id]}); } else add(d,{cat:'family',title:f.title,sub:f.who||lab(FKINDS,f.kind),ref:['family',f.id]}); });
-  if(F.money) S.data.recurring.forEach(r=>payDates(r,ms,me).forEach(d=>add(d,{cat:'money',title:r.name,sub:money(r.amount),ref:['recurring',r.id]})));
-  if(F.plans) S.data.plans.forEach(p=>{ if(p.status==='done') return; add(parse(p.targetDate),{cat:'plans',title:p.title,sub:'Target date',ref:['plans',p.id]}); });
-  if(F.check) add(checkDateIn(ms.getFullYear(),ms.getMonth()),{cat:'check',title:'Balance check',sub:'Record your account balance',check:true});
+  if(on('car')) S.data.cars.forEach(c=>CARDOCS.forEach(([k,l])=>add(parse(c[k]),{cat:'car',title:l,sub:carName(c),ref:['cars',c.id]})));
+  if(on('family')) S.data.family.forEach(f=>{ const d=parse(f.date); if(!d) return; if(f.repeat==='yearly'){ const o=yearDate(d,ms.getFullYear()); if(o>=d) add(o,{cat:'family',title:f.title,sub:[f.who,'every year'].filter(Boolean).join(' · '),ref:['family',f.id]}); } else add(d,{cat:'family',title:f.title,sub:f.who||lab(FKINDS,f.kind),ref:['family',f.id]}); });
+  if(on('docs')) S.data.docs.forEach(x=>add(parse(x.expires),{cat:'docs',title:docTitle(x)+' expires',sub:x.who||'',ref:['docs',x.id]}));
+  if(on('money')) S.data.recurring.forEach(r=>payDates(r,ms,me).forEach(d=>add(d,{cat:'money',title:r.name,sub:money(r.amount),ref:['recurring',r.id]})));
+  if(on('plans')) S.data.plans.forEach(p=>{ if(p.status==='done') return; add(parse(p.targetDate),{cat:'plans',title:p.title,sub:'Target date',ref:['plans',p.id]}); });
+  if(on('check')) add(checkDateIn(ms.getFullYear(),ms.getMonth()),{cat:'check',title:'Balance check',sub:'Record your account balance',check:true});
   return map;
 }
-function evRow(e){
+function evRow(e, d){
   const act = e.check ? 'data-act="add" data-form="balances"' : editAct(e.ref[0],e.ref[1]);
   return '<div class="row"><button class="hit" type="button" '+act+'>'+
     '<span class="t">'+esc(e.title)+(e.proj?'<span class="rep">Repeat</span>':'')+'</span>'+
-    '<span class="r">'+tag(e.cat)+'</span><span class="s">'+esc(e.sub||' ')+'</span></button></div>';
+    '<span class="r">'+tag(e.cat)+(d?dutyChip(d):'')+'</span><span class="s">'+esc(e.sub||' ')+'</span></button></div>';
+}
+function rosterLines(k){
+  const du=S.duty[k]; if(!du) return '';
+  return du.map(ev=>'<div class="rost">'+(ev.ad?'All day':fHM(ev.s)+'–'+fHM(ev.e))+' · '+esc(ev.t||'Duty')+(ev.l?' · '+esc(ev.l):'')+'</div>').join('');
 }
 function vCalendar(){
   const ms=S.calMonth, map=calEvents(ms), t=today(), tk=iso(t);
@@ -786,32 +1062,79 @@ function vCalendar(){
   for(let i=0;i<weeks*7;i++){
     const d=addDays(start,i), k=iso(d), out=d.getMonth()!==ms.getMonth();
     if(out){ cells+='<button class="cell out" type="button" disabled tabindex="-1"><span class="n">'+d.getDate()+'</span></button>'; continue; }
-    const ev=map[k]||[];
+    const ev=map[k]||[], du=S.duty[k];
     const dots=ev.slice(0,5).map(e=>'<i class="'+(e.proj?'p':'')+'" style="--cc:'+CAT[e.cat].c+'"></i>').join('')+(ev.length>5?'<em>+</em>':'');
-    const lbls=ev.slice(0,3).map(e=>'<span class="'+(e.proj?'p':'')+'" style="--cc:'+CAT[e.cat].c+'">'+esc(e.title)+'</span>').join('')+(ev.length>3?'<em>+'+(ev.length-3)+' more</em>':'');
-    cells+='<button class="cell'+(k===tk?' now':'')+(k===S.calSel?' sel':'')+'" type="button" data-act="cday" data-d="'+k+'" aria-label="'+esc(fDay(d))+', '+ev.length+' item'+(ev.length===1?'':'s')+'"><span class="n">'+d.getDate()+'</span><span class="dots">'+dots+'</span><span class="lbls">'+lbls+'</span></button>';
+    const lbls=(du?'<span class="dl">'+esc(dutyShort(du))+'</span>':'')+ev.slice(0,du?2:3).map(e=>'<span class="'+(e.proj?'p':'')+'" style="--cc:'+CAT[e.cat].c+'">'+esc(e.title)+'</span>').join('')+(ev.length>(du?2:3)?'<em>+'+(ev.length-(du?2:3))+' more</em>':'');
+    cells+='<button class="cell'+(k===tk?' now':'')+(k===S.calSel?' sel':'')+(du?' duty':'')+'" type="button" data-act="cday" data-d="'+k+'" aria-label="'+esc(fDay(d))+', '+ev.length+' item'+(ev.length===1?'':'s')+(du?', on duty':'')+'"><span class="n">'+d.getDate()+'</span>'+(du?'<span class="db"></span>':'')+'<span class="dots">'+dots+'</span><span class="lbls">'+lbls+'</span></button>';
   }
   const filt='<div class="filt">'+Object.keys(CAT).map(k=>'<button class="fchip" type="button" data-act="cfilt" data-k="'+k+'" aria-pressed="'+!!S.calFilter[k]+'" style="--cc:'+CAT[k].c+'"><i></i>'+CAT[k].label+'</button>').join('')+'</div>';
   let below='';
   const selIn = S.calSel && S.calSel.slice(0,7)===iso(ms).slice(0,7);
   if(selIn){
-    const ev=map[S.calSel]||[];
-    below='<section class="sec"><div class="sh"><h2>'+esc(fDate(parse(S.calSel),{weekday:'long',day:'numeric',month:'long'}))+'</h2><span class="sp"></span><button class="lnk" type="button" data-act="allmonth">Whole month</button></div>'+
-      '<div class="panel">'+(ev.length?ev.map(evRow).join(''):emptyBox('Nothing on this day','Tap another day, or add something with + Add.'))+'</div></section>';
+    const ev=map[S.calSel]||[], sd=parse(S.calSel), rl=rosterLines(S.calSel);
+    below='<section class="sec"><div class="sh"><h2>'+esc(fDate(sd,{weekday:'long',day:'numeric',month:'long'}))+'</h2><span class="sp"></span><button class="lnk" type="button" data-act="allmonth">Whole month</button></div>'+
+      '<div class="panel">'+rl+(ev.length?ev.map(e=>evRow(e,sd)).join(''):(rl?'':emptyBox('Nothing on this day','Tap another day, or add something with + Add.')))+'</div></section>';
   } else {
-    const keys=Object.keys(map).sort();
+    const keys=[...new Set(Object.keys(map).concat(Object.keys(S.duty).filter(k=>k.slice(0,7)===iso(ms).slice(0,7))))].sort();
     below='<section class="sec"><div class="sh"><h2>All of '+esc(fDate(ms,{month:'long'}))+'</h2></div><div class="panel">'+
-      (keys.length?keys.map(k=>'<div class="agd">'+esc(fDate(parse(k),{weekday:'short',day:'numeric',month:'short'}))+(k===tk?' · today':'')+'</div>'+map[k].map(evRow).join('')).join(''):emptyBox('Nothing this month','Items you add in Home, Car, Family, Money and Plans appear here on their dates.'))+
+      (keys.length?keys.map(k=>'<div class="agd">'+esc(fDate(parse(k),{weekday:'short',day:'numeric',month:'short'}))+(k===tk?' · today':'')+'</div>'+rosterLines(k)+(map[k]||[]).map(e=>evRow(e,parse(k))).join('')).join(''):emptyBox('Nothing this month','Items you add in Home, Car, Family, Money and Plans appear here on their dates.'))+
     '</div></section>';
   }
+  const nR=S.data.roster.length;
   return '<section class="sec"><div class="calhead"><h2>'+esc(fDate(ms,{month:'long',year:'numeric'}))+'</h2>'+
     '<button class="btn sm ghost" type="button" data-act="cal" data-d="-1" aria-label="Previous month">‹</button>'+
     '<button class="btn sm ghost" type="button" data-act="cal" data-d="0">Today</button>'+
     '<button class="btn sm ghost" type="button" data-act="cal" data-d="1" aria-label="Next month">›</button></div>'+filt+
-    '<div class="cal">'+cells+'</div><p class="hint">Outlined marks are future repeats of a recurring job.</p></section>'+below;
+    '<div class="cal">'+cells+'</div><div class="sh"><p class="hint" style="flex:1 1 200px">Shaded days are duty days from your roster. Outlined marks are future repeats of a recurring job.</p><button class="btn sm ghost" type="button" data-act="roster">'+(nR?'Roster':'Import roster')+'</button></div></section>'+below;
 }
 
+/* ---------- Add to Calendar (.ics) ---------- */
+function icsEsc(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;'); }
+function icsFold(line){ const out=[]; while(line.length>73){ out.push(line.slice(0,73)); line=' '+line.slice(73); } out.push(line); return out.join('\r\n'); }
+const ymd = d => d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
+function buildIcs(evs){
+  const st=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Household Logbook//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
+  evs.forEach(e=>{
+    L.push('BEGIN:VEVENT','UID:'+e.uid+'@household-logbook','DTSTAMP:'+st,'DTSTART;VALUE=DATE:'+ymd(e.date),'DTEND;VALUE=DATE:'+ymd(addDays(e.date,1)),'SUMMARY:'+icsEsc(e.title));
+    if(e.notes) L.push('DESCRIPTION:'+icsEsc(e.notes));
+    if(e.yearly) L.push('RRULE:FREQ=YEARLY');
+    L.push('TRANSP:TRANSPARENT');
+    (e.alarms||[1]).forEach(dd=>L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+icsEsc(e.title),'TRIGGER:-P'+(dd>1?(dd-1)+'D':'')+'T15H','END:VALARM'));
+    L.push('END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  return L.map(icsFold).join('\r\n')+'\r\n';
+}
+function itemEvents(col, r){
+  const out=[];
+  if(col==='maint'){ const d=parse(r.dueDate); if(d && !r.done){ const car=r.area==='car'?find('cars',r.carId):null; out.push({uid:'m-'+r.id+'-'+r.dueDate, date:d, title:r.title+(car?' · '+carName(car):''), notes:(Array.isArray(r.steps)?r.steps.map(s=>'• '+s).join('\n'):'')+(r.notes?'\n'+r.notes:''), alarms:[1]}); } }
+  if(col==='cars') CARDOCS.forEach(([k,l])=>{ const d=parse(r[k]); if(d) out.push({uid:'c-'+r.id+'-'+k+'-'+r[k], date:d, title:l+' · '+carName(r), alarms:[14,1]}); });
+  if(col==='family'){ const d=parse(r.date); if(d) out.push({uid:'f-'+r.id, date:d, title:r.title+(r.who?' · '+r.who:''), notes:r.notes, yearly:r.repeat==='yearly', alarms:[1]}); }
+  if(col==='docs'){ const d=parse(r.expires); if(d) out.push({uid:'d-'+r.id+'-'+r.expires, date:d, title:docTitle(r)+' expires'+(r.who?' · '+r.who:''), notes:'Renewal reminder from Household.', alarms:[+r.remindDays||60, 7]}); }
+  if(col==='plans'){ const d=parse(r.targetDate); if(d && r.status!=='done') out.push({uid:'p-'+r.id, date:d, title:r.title+' (target)', alarms:[7]}); }
+  return out;
+}
+function upcomingEvents(){
+  const t=today(), lim=addMonths(t,12), out=[];
+  ['maint','cars','docs','plans'].forEach(c=>S.data[c].forEach(r=>itemEvents(c,r).forEach(e=>{ if(e.date>=addDays(t,-1) && e.date<=lim) out.push(e); })));
+  S.data.family.forEach(r=>itemEvents('family',r).forEach(e=>{ if(e.yearly || (e.date>=t && e.date<=lim)) out.push(e); }));
+  return out.sort((a,b)=>a.date-b.date);
+}
+function openIcs(evs, label){
+  if(!evs.length){ toast('Nothing with a date to add'); return; }
+  const ics=buildIcs(evs);
+  showSheet('<h3 id="sheetTitle">Add to Calendar</h3><p class="hint">'+evs.length+' event'+(evs.length>1?'s':'')+': '+esc(label)+'. Each has an alert at 9:00 the day before; documents also warn ahead of their reminder.</p>'+
+    '<div class="menu"><button type="button" data-act="icsopen">Open in Calendar<small>Shows the iPhone’s Add to Calendar screen</small></button>'+
+    (navigator.share?'<button type="button" data-act="icsshare">Share calendar file<small>If Calendar doesn’t open: send it to Mail or save to Files, then open it there</small></button>':'')+'</div>'+
+    '<div class="sheet-foot"><span class="sp"></span><button class="btn ghost" type="button" data-act="close">Close</button></div>','ics');
+  SH.ics=ics;
+}
+function icsOpen(){ const a=document.createElement('a'); a.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(SH.ics); a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); }
+function icsShare(){ let f=null; try{ f=new File([SH.ics],'household.ics',{type:'text/calendar'}); }catch(_){} const p=f&&navigator.canShare&&navigator.canShare({files:[f]})?navigator.share({files:[f],title:'Household events'}):navigator.share({title:'Household events',text:SH.ics}); p.catch(()=>{}); }
+
 /* ---------- forms ---------- */
+const FILES = (doc) => ({k:'files',label:doc?'Scans and files':'Photos and files',type:'files',doc:!!doc});
 const FORMS = {
   maint:{col:'maint', title:v=>v.id?(v.area==='car'?'Edit service':'Edit maintenance'):(v.area==='car'?'New car service':'New home maintenance'),
     fields:v=>[
@@ -822,6 +1145,7 @@ const FORMS = {
       ...(v.area==='car'?[{k:'dueKm',label:'Or due at (km)',type:'number',half:1},{k:'everyKm',label:'Repeat every (km)',type:'number',half:1}]:[]),
       {k:'companyId',label:v.area==='car'?'Garage':'Company',type:'company'},
       {k:'steps',label:'Steps (one per line)',type:'lines'},
+      FILES(),
       {k:'notes',label:'Notes',type:'textarea'}]},
   cars:{col:'cars', title:v=>v.id?'Edit car':'Add a car', fields:()=>[
       {k:'make',label:'Make',type:'text',req:1,half:1,ph:'Volvo'},{k:'model',label:'Model',type:'text',req:1,half:1,ph:'XC60'},
@@ -834,16 +1158,26 @@ const FORMS = {
       {k:'insurer',label:'Insurer',type:'text',half:1},{k:'insuranceRenewal',label:'Insurance renewal',type:'date',half:1},
       {k:'registrationExpiry',label:'Registration renewal',type:'date',half:1},{k:'warrantyUntil',label:'Warranty ends',type:'date',half:1},
       {k:'serviceContractUntil',label:'Service contract ends',type:'date',half:1},
+      FILES(true),
       {k:'notes',label:'Notes',type:'textarea'}]},
   companies:{col:'companies', title:v=>v.id?'Edit company':'Add a company', fields:()=>[
       {k:'name',label:'Name',type:'text',req:1},
       {k:'trade',label:'What they do',type:'select',opts:[['','—']].concat(TRADES),half:1},{k:'verdict',label:'Verdict',type:'select',opts:[['','—']].concat(VERDICT),half:1},
       {k:'phone',label:'Phone',type:'tel',half:1},{k:'contact',label:'Contact person',type:'text',half:1},
+      FILES(),
       {k:'notes',label:'Notes',type:'textarea',ph:'Prices, what they did well'}]},
   family:{col:'family', title:v=>v.id?'Edit date':'Add a family date', fields:()=>[
-      {k:'title',label:'What',type:'text',req:1,ph:'Passport renewal'},{k:'who',label:'Who',type:'text'},
+      {k:'title',label:'What',type:'text',req:1,ph:'Birthday'},{k:'who',label:'Who',type:'text'},
       {k:'date',label:'Date',type:'date',req:1,half:1},{k:'repeat',label:'Repeats',type:'select',opts:FREPEAT,half:1},
       {k:'kind',label:'Type',type:'select',opts:FKINDS},{k:'notes',label:'Notes',type:'textarea'}]},
+  docs:{col:'docs', title:v=>v.id?'Edit document':'Add a document', fields:()=>[
+      {k:'kind',label:'Document',type:'select',opts:DKINDS,half:1},{k:'who',label:'Whose',type:'text',half:1,ph:'Name'},
+      {k:'title',label:'Title (optional)',type:'text',ph:'e.g. Hungarian passport'},
+      {k:'number',label:'Number',type:'text'},
+      {k:'issued',label:'Issued',type:'date',half:1},{k:'expires',label:'Expires',type:'date',half:1},
+      {k:'remindDays',label:'Remind me',type:'select',opts:DREMIND,num:1},
+      FILES(true),
+      {k:'notes',label:'Notes',type:'textarea'}]},
   recurring:{col:'recurring', title:v=>v.id?'Edit commitment':'Add a recurring payment', fields:()=>[
       {k:'name',label:'Name',type:'text',req:1,ph:'Home internet'},{k:'kind',label:'Type',type:'select',opts:RKINDS},
       {k:'amount',label:'Amount ('+(S.settings.currency||'AED')+')',type:'number',req:1,half:1},{k:'every',label:'How often',type:'select',opts:REVERY,num:1,half:1},
@@ -859,16 +1193,17 @@ const FORMS = {
       {k:'category',label:'Area',type:'select',opts:PCATS,half:1},{k:'status',label:'Status',type:'select',opts:PSTATUS,half:1},
       {k:'targetDate',label:'Target date',type:'date',half:1},{k:'targetAmount',label:'Target amount',type:'number',half:1},
       {k:'savedAmount',label:'Saved so far',type:'number',half:1},
+      FILES(),
       {k:'notes',label:'Notes',type:'textarea'}]},
   history:{col:'history', title:()=>'Edit log entry', fields:v=>[
       {k:'title',label:'What was done',type:'text',req:1},
       {k:'date',label:'Date',type:'date',req:1,half:1},{k:'cost',label:'Cost',type:'number',half:1},
       ...(v.area==='car'?[{k:'km',label:'Odometer (km)',type:'number',half:1}]:[]),
-      {k:'companyId',label:'Company',type:'company'},{k:'notes',label:'Notes',type:'textarea'}]},
+      {k:'companyId',label:'Company',type:'company'},FILES(true),{k:'notes',label:'Notes',type:'textarea'}]},
   done:{title:v=>v.title, fields:v=>[
       {k:'doneDate',label:'Date done',type:'date',req:1,half:1},{k:'cost',label:'Cost',type:'number',half:1},
       ...(v.area==='car'?[{k:'km',label:'Odometer (km)',type:'number',half:1}]:[]),
-      {k:'companyId',label:v.area==='car'?'Garage':'Company',type:'company'},{k:'notes',label:'Notes',type:'textarea'}]},
+      {k:'companyId',label:v.area==='car'?'Garage':'Company',type:'company'},{k:'files',label:'Invoice or photos',type:'files',doc:true},{k:'notes',label:'Notes',type:'textarea'}]},
   odo:{title:v=>'Update km · '+carName(v), fields:()=>[{k:'odometer',label:'Odometer (km)',type:'number',req:1,half:1},{k:'odometerDate',label:'Reading date',type:'date',half:1}]},
   settings:{title:()=>'Money settings', fields:()=>[
       {k:'currency',label:'Currency',type:'text',half:1},{k:'checkDay',label:'Balance check day (1–28)',type:'number',half:1},
@@ -880,6 +1215,9 @@ const form = $('#sheet');
 function fieldHtml(f, v){
   const id='f_'+f.k; let val=v[f.k]==null?'':v[f.k];
   const L = '<span>'+esc(f.label)+'</span>';
+  if(f.type==='files') return '<div class="fld">'+L+'<div class="att" id="attBox"></div><div class="att-btns"><label class="btn sm ghost" for="camIn">Scan / photo</label><label class="btn sm ghost" for="pickIn">Choose photo or PDF</label>'+
+    '<label class="chk"><input type="checkbox" id="enh"'+(f.doc?' checked':'')+'> Sharpen as document</label></div>'+
+    '<input type="file" id="camIn" class="vh" accept="image/*" capture="environment"><input type="file" id="pickIn" class="vh" accept="image/*,application/pdf,.pdf" multiple></div>';
   if(f.type==='lines') return '<label class="fld">'+L+'<textarea id="'+id+'" name="'+id+'" rows="4">'+esc(Array.isArray(val)?val.join('\n'):val)+'</textarea></label>';
   if(f.type==='textarea') return '<label class="fld">'+L+'<textarea id="'+id+'" name="'+id+'" placeholder="'+esc(f.ph||'')+'">'+esc(val)+'</textarea></label>';
   if(f.type==='select') return '<label class="fld">'+L+'<select id="'+id+'" name="'+id+'">'+f.opts.map(o=>'<option value="'+esc(o[0])+'"'+(String(o[0])===String(val)?' selected':'')+'>'+esc(o[1])+'</option>').join('')+'</select></label>';
@@ -900,8 +1238,25 @@ function fieldsHtml(fields, v){
   flush(); return out;
 }
 function showSheet(html, kind){
-  SH = SH && SH.kind===kind ? SH : {kind};
+  SH = {kind};
   form.innerHTML=html; $('#sheetWrap').hidden=false; form.scrollTop=0;
+  hydrateThumbs(form);
+}
+function renderAtt(){
+  const box=$('#attBox'); if(!box || !SH) return;
+  box.innerHTML = SH.files.length ? SH.files.map(f=>'<div class="att-i"><button type="button" class="att-t" data-act="viewfile" data-id="'+esc(f.id)+'" aria-label="Open '+esc(f.n)+'">'+thumbHtml(f,'att-in')+'</button><button type="button" class="att-x" data-act="rmfile" data-id="'+esc(f.id)+'" aria-label="Remove">×</button></div>').join('') : '<span class="hint">None yet</span>';
+  box.querySelectorAll('.att-in').forEach(s=>{ s.style.display='contents'; });
+  hydrateThumbs(box);
+}
+async function takeFiles(list){
+  if(!list || !list.length || !SH) return;
+  const enh=$('#enh') && $('#enh').checked, box=$('#attBox');
+  for(const file of Array.from(list)){
+    if(box) box.insertAdjacentHTML('beforeend','<span class="hint" id="attWait">Adding…</span>');
+    try{ const ref=await addFile(file, enh && /^image\//.test(file.type)); if(SH && SH.files) SH.files.push(ref); }
+    catch(e){ toast(e && e.message && e.message.length<80 ? e.message : 'Couldn’t add that file'); }
+    renderAtt();
+  }
 }
 function openForm(kind, ctx){
   ctx = ctx || {};
@@ -919,6 +1274,7 @@ function openForm(kind, ctx){
       v={area, dueDate:iso(addMonths(t,1)), everyMonths:area==='home'?6:12, carId:S.carSel||(S.data.cars[0]&&S.data.cars[0].id)};
     }
     if(kind==='family') v={date:iso(t), repeat:'yearly', kind:'birthday'};
+    if(kind==='docs') v={kind:'passport', remindDays:60};
     if(kind==='recurring') v={every:1, kind:'subscription', payDate:iso(t)};
     if(kind==='balances') v={date:iso(t), income:S.settings.income==null?'':S.settings.income};
     if(kind==='plans') v={status:'planned', category:'finance'};
@@ -932,19 +1288,24 @@ function openForm(kind, ctx){
       '<p class="hint">'+(e>0?'Next due: '+esc(everyText(e).toLowerCase())+' after the date done.':rec.everyKm?'The next km target moves forward by '+num(rec.everyKm)+' km.':e===-1?'Logged in the history. It stays in the As needed list.':'This is a one-off, so it leaves the schedule and stays in the history.')+'</p>';
   }
   if(kind==='settings') intro='<p class="hint">Pick the day you’ll check your balance each month, for example the day after salary arrives.</p>';
+  const icsBtn = rec && def.col && itemEvents(def.col, rec).length ? '<div class="sheet-extra"><button class="btn sm ghost" type="button" data-act="icsitem">Add to Calendar</button></div>' : '';
   showSheet('<h3 id="sheetTitle">'+esc(def.title(v))+'</h3>'+intro+fieldsHtml(fields,v)+
-    (def.calc?'<div class="calc" id="calc"></div>':'')+
+    (def.calc?'<div class="calc" id="calc"></div>':'')+icsBtn+
     '<p class="err" id="formErr" hidden></p>'+
     '<div class="sheet-foot">'+(canDel?'<button class="btn sm danger" type="button" data-act="del">Delete</button>':'')+'<span class="sp"></span>'+
     '<button class="btn ghost" type="button" data-act="close">Cancel</button><button class="btn" type="submit" id="saveBtn">'+(kind==='done'?'Log it':'Save')+'</button></div>', 'form:'+kind);
-  SH={kind:'form:'+kind, form:kind, def, rec, ctx, fields, area:v.area};
+  SH={kind:'form:'+kind, form:kind, def, rec, ctx, fields, area:v.area, files: kind==='done' ? [] : filesOf(rec).slice()};
+  if(fields.some(f=>f.type==='files')){
+    renderAtt();
+    ['camIn','pickIn'].forEach(id=>{ const el=$('#'+id); if(el) el.addEventListener('change',e=>{ const fl=e.target.files; takeFiles(fl).then(()=>{ try{ e.target.value=''; }catch(_){} }); }); });
+  }
   if(def.calc) updateCalc();
 }
 function openChooser(){
   const opt=(f,area,cat,label)=>'<button type="button" data-act="add" data-form="'+f+'"'+(area?' data-area="'+area+'"':'')+' style="--cc:'+CAT[cat].c+'"><i></i>'+label+'</button>';
   showSheet('<h3 id="sheetTitle">Add to the logbook</h3><div class="choose">'+
     opt('maint','home','home','Home maintenance')+opt('companies','','home','Company')+opt('maint','car','car','Car service')+opt('cars','','car','Car')+
-    opt('family','','family','Family date')+opt('recurring','','money','Recurring payment')+opt('balances','','check','Balance check')+opt('plans','','plans','Long-term plan')+
+    opt('docs','','docs','Document')+opt('family','','family','Family date')+opt('recurring','','money','Recurring payment')+opt('balances','','check','Balance check')+opt('plans','','plans','Long-term plan')+
     '</div><div class="sheet-foot"><span class="sp"></span><button class="btn ghost" type="button" data-act="close">Cancel</button></div>','chooser');
 }
 function closeSheet(){ $('#sheetWrap').hidden=true; form.innerHTML=''; SH=null; }
@@ -952,6 +1313,7 @@ function closeSheet(){ $('#sheetWrap').hidden=true; form.innerHTML=''; SH=null; 
 function collect(){
   const v={}; let newCo='';
   for(const f of SH.fields){
+    if(f.type==='files'){ v[f.k]=SH.files.slice(); continue; }
     const el=form.elements['f_'+f.k]; if(!el) continue;
     if(f.type==='company'){ v[f.k]=el.value||null; const n=form.elements['f_'+f.k+'_new']; newCo=n?n.value.trim():''; continue; }
     if(f.type==='lines'){ v[f.k]=el.value.split('\n').map(s=>s.trim()).filter(Boolean); continue; }
@@ -980,12 +1342,13 @@ function save(){
   const err=$('#formErr'); err.hidden=true;
   const miss=SH.fields.find(f=>f.req && (v[f.k]==null || v[f.k]===''));
   if(miss){ err.textContent=miss.label+' is needed.'; err.hidden=false; const el=form.elements['f_'+miss.k]; if(el) el.focus(); return; }
-  if(kind==='maint' && +v.everyMonths!==-1 && !v.dueDate && !v.dueKm){ err.textContent=SH.area==='car'?'Add a due date, a km reading, or both.':'Add the next due date.'; err.hidden=false; return; }
+  if(kind==='maint' && +v.everyMonths!==-1 && +v.everyMonths!==0 && !v.dueDate && !v.dueKm){ err.textContent=SH.area==='car'?'Add a due date, a km reading, or both.':'Add the next due date.'; err.hidden=false; return; }
+  if(kind==='maint' && +v.everyMonths===0 && !v.dueDate && !v.dueKm){ err.textContent='Add the date it’s due.'; err.hidden=false; return; }
   const stamp=iso(today());
   if(newCo && 'companyId' in v) v.companyId=addDoc('companies',{name:newCo, trade:SH.area==='car'?'Garage / dealer':null, created:stamp});
   if(kind==='done'){
     const m=rec, done=parse(v.doneDate)||today(), every=+m.everyMonths||0;
-    addDoc('history',{maintId:m.id, area:m.area, carId:m.carId||null, title:m.title, date:iso(done), cost:v.cost, km:v.km==null?null:v.km, companyId:v.companyId||m.companyId||null, notes:v.notes, created:stamp});
+    addDoc('history',{maintId:m.id, area:m.area, carId:m.carId||null, title:m.title, date:iso(done), cost:v.cost, km:v.km==null?null:v.km, companyId:v.companyId||m.companyId||null, files:v.files||[], notes:v.notes, created:stamp});
     const upd={lastDone:iso(done), lastCost:v.cost, companyId:v.companyId||m.companyId||null};
     let msg;
     if(every===-1){ msg='Logged'; }
@@ -1002,7 +1365,7 @@ function save(){
   if(kind==='odo'){ updDoc('cars',rec.id,{odometer:v.odometer, odometerDate:v.odometerDate||stamp}); closeSheet(); commit(); toast('Odometer updated'); return; }
   if(kind==='settings'){
     const nv=Object.assign({},S.settings,v); nv.currency=String(nv.currency||'AED').toUpperCase().slice(0,6); nv.checkDay=Math.min(28,Math.max(1,Math.round(+nv.checkDay||1)));
-    S.settings=nv; closeSheet(); commit(); toast('Settings saved'); return;
+    setSettings(nv); closeSheet(); commit(); toast('Settings saved'); return;
   }
   if(rec){ updDoc(def.col,rec.id,Object.assign({},v,{updated:stamp})); closeSheet(); commit(); toast('Saved'); return; }
   const data=Object.assign({},v,{created:stamp}); if(kind==='maint') data.area=SH.area;
@@ -1015,77 +1378,173 @@ function del(){
   if(!SH || !SH.rec || !SH.def || !SH.def.col) return;
   const col=SH.def.col, id=SH.rec.id;
   delDoc(col,id);
-  if(col==='cars') S.data.maint=S.data.maint.filter(x=>!(x.carId===id && !x.done));
+  if(col==='cars') S.data.maint.filter(x=>x.carId===id && !x.done).map(x=>x.id).forEach(mid=>delDoc('maint',mid));
   closeSheet(); commit(); toast('Deleted');
 }
 function confirmTap(el, fn){
   if(el.dataset.armed){ delete el.dataset.armed; el.classList.remove('armed'); fn(el); return; }
-  const txt=el.textContent; el.dataset.armed='1'; el.classList.add('armed'); el.textContent='Tap again to confirm';
-  setTimeout(()=>{ if(el.isConnected && el.dataset.armed){ delete el.dataset.armed; el.classList.remove('armed'); el.textContent=txt; } }, 4000);
+  const txt=el.innerHTML; el.dataset.armed='1'; el.classList.add('armed'); el.textContent='Tap again to confirm';
+  setTimeout(()=>{ if(el.isConnected && el.dataset.armed){ delete el.dataset.armed; el.classList.remove('armed'); el.innerHTML=txt; } }, 4000);
 }
 function copyText(text, el, quiet){
-  const fallback=()=>{ const span=el && el.parentElement && el.parentElement.querySelector('.phone'); if(span){ const r=document.createRange(); r.selectNodeContents(span); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast('Selected. Copy it from the menu.'); } else toast('Copy didn’t work here. Use Share instead.'); };
+  const fallback=()=>{ const span=el && el.parentElement && el.parentElement.querySelector('.phone,.code-box'); if(span){ const r=document.createRange(); r.selectNodeContents(span); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast('Selected. Copy it from the menu.'); } else toast('Copy didn’t work here. Use Share instead.'); };
   try{ const p=navigator.clipboard && navigator.clipboard.writeText(text); if(p) p.then(()=>toast(quiet||('Copied '+text)), fallback); else fallback(); }catch(_){ fallback(); }
 }
 let toastT=0;
 function toast(msg,ms){ const t=$('#toast'); t.textContent=msg; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>{ t.hidden=true; },ms||2800); }
 
+/* ---------- viewer ---------- */
+let VW=null;
+async function openViewer(id){
+  const ref=findFileRef(id)||{id, t:'image/jpeg', n:'file'};
+  const v=$('#viewer'), body=$('#vBody'); $('#vTitle').textContent=ref.n||'';
+  v.hidden=false; body.innerHTML='<p>Loading…</p>'; VW={ref, rec:null};
+  let f=await fileGet(id);
+  if(!f && cloud.on){ body.innerHTML='<p>Downloading from your sync repository…</p>'; try{ f=await downloadFile(ref); }catch(e){ f=null; } }
+  if(!VW || VW.ref.id!==id) return;
+  if(!f){ body.innerHTML='<p>This file isn’t on this iPhone yet. '+(cloud.on?'It appears after the other iPhone has synced it.':'Turn on Sync & backup to get files from another iPhone.')+'</p>'; $('#vShare').hidden=true; return; }
+  VW.rec=f; $('#vShare').hidden=!navigator.share;
+  if(f.type==='application/pdf'){
+    body.innerHTML='<p>Opening PDF…</p>';
+    try{
+      const doc=await pdfDoc(f.data), n=Math.min(doc.numPages,30), w=Math.min(1600, Math.round((body.clientWidth-20)*(window.devicePixelRatio||1)));
+      body.innerHTML='';
+      for(let i=1;i<=n;i++){ if(!VW || VW.ref.id!==id) return; const pg=await doc.getPage(i), vp=pg.getViewport({scale:1}), v2=pg.getViewport({scale:w/vp.width}), c=document.createElement('canvas'); c.width=Math.ceil(v2.width); c.height=Math.ceil(v2.height); c.style.width=Math.round(v2.width/(window.devicePixelRatio||1))+'px'; body.appendChild(c); await pg.render({canvasContext:c.getContext('2d'),viewport:v2}).promise; }
+      if(doc.numPages>n) body.insertAdjacentHTML('beforeend','<p>Showing the first 30 pages. Use Share to open the whole PDF.</p>');
+    }catch(e){ body.innerHTML='<p>Couldn’t show this PDF here. Use Share to open it in Files.</p>'; }
+  } else body.innerHTML='<img alt="'+esc(ref.n||'')+'" src="'+f.data+'">';
+}
+function closeViewer(){ $('#viewer').hidden=true; $('#vBody').innerHTML=''; VW=null; }
+function shareViewer(){ if(!VW || !VW.rec) return; const f=VW.rec; let file=null; try{ file=new File([dataToBlob(f.data)], f.name||('file'+(f.type==='application/pdf'?'.pdf':'.jpg')), {type:f.type}); }catch(_){} if(file && navigator.canShare && navigator.canShare({files:[file]})) navigator.share({files:[file]}).catch(()=>{}); else toast('Sharing isn’t available here'); }
+
+/* ---------- search ---------- */
+const SKIP=new Set(['id','u','created','updated','carId','companyId','maintId','files','area','everyMonths','every','remindDays','s','e','ad','repeat','status','category','kind','verdict']);
+function searchAll(q){
+  const words=fold(q).split(/\s+/).filter(Boolean); if(!words.length) return [];
+  const res=[];
+  const conf=[
+    ['maint', r=>r.area==='car'?'car':'home', r=>r.title, r=>[find('companies',r.companyId)&&find('companies',r.companyId).name, everyText(r.everyMonths)]],
+    ['history', r=>r.area==='car'?'car':'home', r=>r.title+' · '+fDate(parse(r.date)), r=>[find('companies',r.companyId)&&find('companies',r.companyId).name]],
+    ['companies', ()=>'home', r=>r.name, r=>[r.trade]],
+    ['cars', ()=>'car', r=>carName(r), r=>[]],
+    ['docs', ()=>'docs', r=>docTitle(r)+(r.who?' · '+r.who:''), r=>[lab(DKINDS,r.kind)]],
+    ['family', ()=>'family', r=>r.title, r=>[lab(FKINDS,r.kind)]],
+    ['recurring', ()=>'money', r=>r.name+' · '+money(r.amount), r=>[lab(RKINDS,r.kind)]],
+    ['plans', ()=>'plans', r=>r.title, r=>[lab(PCATS,r.category)]]
+  ];
+  conf.forEach(([col,cat,title,extra])=>S.data[col].forEach(r=>{
+    const parts=[]; Object.keys(r).forEach(k=>{ if(SKIP.has(k)) return; const v=r[k]; if(typeof v==='string') parts.push(v); else if(typeof v==='number' && k!=='u') parts.push(String(v)); else if(Array.isArray(v)) v.forEach(x=>{ if(typeof x==='string') parts.push(x); }); });
+    extra(r).forEach(x=>{ if(x) parts.push(x); });
+    const hay=fold(parts.join(' \u2002 '));
+    if(!words.every(w=>hay.includes(w))) return;
+    const t=title(r); let snip='';
+    for(const p of parts){ const fp=fold(p); if(words.some(w=>fp.includes(w)) && !fold(t).includes(fp)){ snip=p; break; } }
+    const score=words.reduce((s,w)=>s+(fold(t).includes(w)?2:0),0);
+    res.push({col, id:r.id, cat:cat(r), title:t, snip, score});
+  }));
+  return res.sort((a,b)=>b.score-a.score).slice(0,50);
+}
+function markup(text, q){
+  const words=fold(q).split(/\s+/).filter(Boolean); let s=String(text||'');
+  if(s.length>110){ const fs=fold(s), i=Math.max(0, Math.min(...words.map(w=>{ const j=fs.indexOf(w); return j<0?1e9:j; }))-30); if(i<1e8) s=(i>0?'…':'')+s.slice(i,i+110)+'…'; }
+  let out=esc(s); words.forEach(w=>{ if(w.length<2) return; out=out.replace(new RegExp('('+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>'); });
+  return out;
+}
+let qT=0;
+function openSearch(){
+  showSheet('<h3 id="sheetTitle">Search</h3><label class="fld"><input id="q" type="search" placeholder="Jobs, companies, documents, payments…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search"></label><div class="panel" id="qres"></div><div class="sheet-foot"><span class="sp"></span><button class="btn ghost" type="button" data-act="close">Close</button></div>','search');
+  const q=$('#q'); q.value=SH.q||''; q.addEventListener('input',()=>{ clearTimeout(qT); qT=setTimeout(runSearch,120); }); runSearch(); setTimeout(()=>{ try{ q.focus(); }catch(_){} },60);
+}
+function runSearch(){
+  const q=($('#q')||{}).value||'', box=$('#qres'); if(!box) return;
+  if(!q.trim()){ box.innerHTML='<div class="qhint">Search everything: maintenance and its steps, companies and phone numbers, the car’s plate and VIN, documents and their numbers, payments and plans.</div>'; return; }
+  const res=searchAll(q);
+  box.innerHTML=res.length ? res.map(r=>'<div class="row"><button class="hit" type="button" '+editAct(r.col,r.id)+'><span class="t">'+markup(r.title,q)+'</span><span class="r">'+tag(r.cat)+'</span><span class="s">'+(r.snip?markup(r.snip,q):'&nbsp;')+'</span></button></div>').join('') : '<div class="qhint">Nothing matches “'+esc(q)+'”.</div>';
+}
+
+/* ---------- roster sheet ---------- */
+function openRoster(){
+  const n=S.data.roster.length, s=n?Math.min(...S.data.roster.map(r=>r.s)):0, e=n?Math.max(...S.data.roster.map(r=>r.e||r.s)):0;
+  showSheet('<h3 id="sheetTitle">Your roster</h3><p class="hint">Import your roster as a calendar file (.ics). Duty days are shaded on the calendar and in This week, and jobs that fall on them are marked On duty. Importing again replaces the same dates.</p>'+
+    '<div class="cl-stat"><b>Imported</b>'+(n?n+' entries · '+esc(fDate(new Date(s)))+' to '+esc(fDate(new Date(e))):'No roster yet')+'</div>'+
+    '<input type="file" id="rosIn" class="vh" accept=".ics,text/calendar,text/plain">'+
+    '<div class="sheet-extra"><label class="btn" for="rosIn">Choose roster file</label></div>'+
+    '<label class="fld"><span>Or paste the calendar text</span><textarea id="rosTxt" class="code" rows="4" placeholder="BEGIN:VCALENDAR…" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea></label>'+
+    '<label class="fld"><span>Not duty: entries containing these words are ignored</span><input id="rosIgn" type="text" value="'+esc(S.settings.rosterIgnore||'')+'" autocapitalize="characters" autocomplete="off"></label>'+
+    '<div class="sheet-foot">'+(n?'<button class="btn sm danger" type="button" data-act="rosclear">Remove roster</button>':'')+'<span class="sp"></span><button class="btn ghost" type="button" data-act="close">Close</button><button class="btn" type="button" data-act="rosgo">Save</button></div>','roster');
+  $('#rosIn').addEventListener('change',e=>{ const f=e.target.files&&e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ const ta=$('#rosTxt'); if(ta) ta.value=String(rd.result||''); rosterSave(); }; rd.onerror=()=>toast('Couldn’t read that file'); rd.readAsText(f); });
+}
+function rosterSave(){
+  const ign=($('#rosIgn')||{}).value, txt=(($('#rosTxt')||{}).value||'').trim();
+  if(ign!=null && ign!==S.settings.rosterIgnore) setSettings(Object.assign({},S.settings,{rosterIgnore:ign}));
+  let n=0;
+  if(txt){ if(!/BEGIN:VEVENT/i.test(txt)){ toast('That isn’t a calendar file. It should contain BEGIN:VEVENT.',3500); return; } n=importRoster(txt); if(!n){ toast('No roster entries found in that file',3500); return; } }
+  closeSheet(); commit(); toast(n?'Imported '+n+' roster entries':'Saved');
+}
+
 /* ---------- settings, file backup and restore ---------- */
 function openMenu(){
   const n=COLS.reduce((s,c)=>s+S.data[c].length,0);
   showSheet('<h3 id="sheetTitle">Settings & backup</h3><div class="menu">'+
-    '<button type="button" data-act="cloud">Online backup<small'+(cloud.on&&cloud.err?' class="warn"':'')+' id="cloudMenu">'+esc(cloudMenuText())+'</small></button>'+
+    '<button type="button" data-act="cloud">Sync & backup<small'+(cloud.on&&cloud.err?' class="warn"':'')+' id="cloudMenu">'+esc(cloudMenuText())+'</small></button>'+
+    '<button type="button" data-act="roster">Roster<small>'+(S.data.roster.length?S.data.roster.length+' entries imported':'Import your roster to see duty days')+'</small></button>'+
     '<button type="button" data-act="export">Back up to a file<small>Save a copy to Files, Notes or AirDrop</small></button>'+
-    '<button type="button" data-act="import">Restore from a file<small>Replaces everything on this iPhone</small></button>'+
+    '<button type="button" data-act="import">Restore from a file<small>Replaces everything with the backup</small></button>'+
     '<button type="button" data-act="settings">Money settings<small>'+esc((S.settings.currency||'AED')+' · balance check on day '+(+S.settings.checkDay||1))+'</small></button>'+
-    '</div><p class="hint">Everything is stored on this iPhone ('+n+' entries). Removing the Home Screen icon deletes it, so keep a backup.</p>'+
+    '</div><p class="hint">Everything is stored on this iPhone ('+n+' entries). Removing the Home Screen icon deletes it, so keep Sync & backup on.</p>'+
     '<p class="ver">App version '+APP_VERSION+(updAvail?' · <button class="lnk" type="button" data-act="update">New version ready, restart</button>':'')+'</p>'+
     '<div class="sheet-foot"><span class="sp"></span><button class="btn ghost" type="button" data-act="close">Close</button></div>','menu');
 }
-function backupJson(){ return JSON.stringify(Object.assign({exported:new Date().toISOString()}, snapshot()), null, 1); }
-function openExport(){
-  const json=backupJson();
-  showSheet('<h3 id="sheetTitle">Back up to a file</h3><p class="hint">Share the file to Files (iCloud Drive) or Notes. Restore it from this menu on this or another iPhone.</p>'+
-    '<label class="fld"><span>Backup</span><textarea class="code" rows="6" readonly>'+esc(json)+'</textarea></label>'+
-    '<div class="sheet-foot"><button class="btn ghost" type="button" data-act="close">Close</button><span class="sp"></span>'+(navigator.share?'<button class="btn ghost" type="button" data-act="sharefile">Share file</button>':'')+'<button class="btn" type="button" data-act="copyjson">Copy</button></div>','export');
+async function openExport(){
+  showSheet('<h3 id="sheetTitle">Back up to a file</h3><p class="hint" id="expHint">Preparing the backup…</p>','export');
+  const files={}; let size=0;
+  for(const ref of allFileRefs().values()){ const f=await fileGet(ref.id); if(f){ files[ref.id]={t:f.type, n:f.name, d:f.data}; size+=f.data.length; } }
+  if(!SH || SH.kind!=='export') return;
+  const json=JSON.stringify(Object.assign({exported:new Date().toISOString()}, snapshot(), {files}));
+  const mb=(json.length/1048576).toFixed(1), big=json.length>400000;
+  showSheet('<h3 id="sheetTitle">Back up to a file</h3><p class="hint">'+(Object.keys(files).length?'Includes '+Object.keys(files).length+' photo'+(Object.keys(files).length>1?'s and files':' or file')+'. ':'')+'Size '+mb+' MB. Share it to Files (iCloud Drive) and restore it from this menu on this or another iPhone.</p>'+
+    '<div class="sheet-foot"><button class="btn ghost" type="button" data-act="close">Close</button><span class="sp"></span>'+(big?'':'<button class="btn ghost" type="button" data-act="copyjson">Copy</button>')+(navigator.share?'<button class="btn" type="button" data-act="sharefile">Share file</button>':'')+'</div>','export');
   SH.json=json;
 }
 function shareFile(){
-  const json=SH && SH.json || backupJson(), name='household-'+iso(today())+'.json'; let file=null;
+  const json=SH && SH.json, name='household-'+iso(today())+'.json'; if(!json) return; let file=null;
   try{ file=new File([json],name,{type:'application/json'}); }catch(_){}
   const p = file && navigator.canShare && navigator.canShare({files:[file]}) ? navigator.share({files:[file],title:'Household backup'}) : navigator.share({title:'Household backup',text:json});
-  p.then(()=>saveUi({lastFileBackup:Date.now()})).catch(()=>{});
+  p.then(()=>saveUi({lastFileBackup:now()})).catch(()=>{});
 }
 function openImport(){
-  showSheet('<h3 id="sheetTitle">Restore from a file</h3><p class="hint">Choose a backup file or paste a backup. This replaces everything on this iPhone.</p>'+
-    '<label class="fld"><span>Backup</span><textarea id="fImport" class="code" rows="6" placeholder="Paste a backup here" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea></label>'+
+  showSheet('<h3 id="sheetTitle">Restore from a file</h3><p class="hint">Choose a backup file or paste a backup. Everything is replaced with the backup'+(cloud.on?', on every synced iPhone':'')+'.</p>'+
+    '<label class="fld"><span>Backup</span><textarea id="fImport" class="code" rows="5" placeholder="Paste a backup here" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea></label>'+
     '<input type="file" id="fFile" class="vh" accept=".json,.txt,application/json,text/plain">'+
     '<p class="err" id="formErr" hidden></p>'+
     '<div class="sheet-foot"><label class="btn ghost" for="fFile">Choose file</label><span class="sp"></span><button class="btn ghost" type="button" data-act="close">Cancel</button><button class="btn danger" type="button" data-act="restorefile">Restore</button></div>','import');
   $('#fFile').addEventListener('change', e=>{
     const file=e.target.files && e.target.files[0]; if(!file) return;
-    const rd=new FileReader(); rd.onload=()=>{ const ta=$('#fImport'); if(ta) ta.value=String(rd.result||''); }; rd.onerror=()=>toast('Couldn’t read that file'); rd.readAsText(file);
+    const rd=new FileReader(); rd.onload=()=>{ if(SH){ SH.text=String(rd.result||''); const ta=$('#fImport'); if(ta) ta.value=SH.text.length>200000?'(backup file loaded: '+(SH.text.length/1048576).toFixed(1)+' MB)':SH.text; } }; rd.onerror=()=>toast('Couldn’t read that file'); rd.readAsText(file);
   });
 }
-function applyRestore(o, msg){ S.data=o.data; S.settings=o.settings; S.carSel=null; persist(); render(); window.scrollTo(0,0); toast(msg||'Restored',3000); }
-function restoreFromText(){
-  let o=null; try{ o=normalize(JSON.parse(($('#fImport').value||'').trim())); }catch(_){}
+async function restoreFromText(){
+  const ta=$('#fImport'), txt=(SH && SH.text && ta && /^\(backup file loaded/.test(ta.value)) ? SH.text : (ta?ta.value:'').trim();
+  let parsed=null, o=null; try{ parsed=JSON.parse(txt); o=normalize(parsed); }catch(_){}
   if(!o){ const e=$('#formErr'); e.textContent='That isn’t a Household backup.'; e.hidden=false; return; }
-  closeSheet(); applyRestore(o,'Restored from the file'); cloudNudge();
+  closeSheet(); toast('Restoring…',30000);
+  const files=parsed.files && typeof parsed.files==='object' ? parsed.files : {};
+  for(const id of Object.keys(files)){ const x=files[id]; if(!x || typeof x.d!=='string') continue; if(await fileGet(id)) continue; await filePut({id, type:x.t||'image/jpeg', name:x.n||'file', data:x.d, thumb:null, created:now()}).catch(()=>{}); }
+  applyState(restoreState(o)); window.scrollTo(0,0); toast('Restored from the file',3000); scheduleSync(1500);
 }
 
-/* ---------- online backup: a private GitHub repository, while the app is open and online ---------- */
-const CKEY='householdLogbook.cloud', CLOUD_QUIET=60000, CLOUD_GAP=180000, CPATH='household.json';
+/* ---------- sync & backup: a private GitHub repository shared by your iPhones ---------- */
+const CKEY='householdLogbook.cloud', CPATH='household.json';
 function loadCloud(){
   let c=null; try{ c=JSON.parse(localStorage.getItem(CKEY)||'null'); }catch(e){}
   if(!c || typeof c!=='object') c={};
   const s=x=>typeof x==='string'?x:'';
-  return {repo:s(c.repo), token:s(c.token), on:!!(c.on&&c.repo&&c.token), sha:s(c.sha), hash:s(c.hash), last:+c.last||0, err:s(c.err), kind:s(c.kind)};
+  return {repo:s(c.repo), token:s(c.token), on:!!(c.on&&c.repo&&c.token), last:+c.last||0, err:s(c.err), kind:s(c.kind), up:Array.isArray(c.up)?c.up.filter(x=>typeof x==='string'):[]};
 }
-let cloud=loadCloud(), cloudBusy=false, cloudTickHash='', cloudChangedAt=0, cloudRetryAt=0;
+let cloud=loadCloud(), syncBusy=false, syncTimer=0, cloudRetryAt=0, lastSyncTry=0;
 function saveCloud(){ try{ localStorage.setItem(CKEY, JSON.stringify(cloud)); }catch(e){} }
-function strHash(s){ let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0).toString(36)+'.'+s.length; }
 function b64utf8(s){ const b=new TextEncoder().encode(s); let out=''; for(let i=0;i<b.length;i+=0x8000) out+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000)); return btoa(out); }
+function b64decodeUtf8(s){ const bin=atob(String(s).replace(/\s/g,'')), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return new TextDecoder().decode(u); }
 function ghFetch(repo,token,method,path,body,accept){
   const o={method, cache:'no-store', headers:{'Authorization':'Bearer '+token,'Accept':accept||'application/vnd.github+json'}};
   if(body){ o.headers['Content-Type']='application/json'; o.body=JSON.stringify(body); }
@@ -1094,124 +1553,180 @@ function ghFetch(repo,token,method,path,body,accept){
 const gh = (method,path,body,accept) => ghFetch(cloud.repo,cloud.token,method,path,body,accept);
 function ghErr(r){ const e=new Error('GitHub '+r.status); e.status=r.status; if((r.status===403||r.status===429)&&(r.headers.get('retry-after')||r.headers.get('x-ratelimit-remaining')==='0')) e.status=429; return e; }
 function okJson(r){ if(!r.ok) throw ghErr(r); return r.json(); }
-function cloudPending(){ const json=JSON.stringify(snapshot(),null,1); return {json, h:strHash(json)}; }
-function cloudDataSha(){ return gh('GET','/contents/'+CPATH,null,'application/vnd.github.object+json').then(r=>{ if(r.status===404) return ''; return okJson(r).then(j=>j.sha||''); }); }
-function cloudPutData(json){
-  const body={message:'Backup '+new Date().toISOString().slice(0,16).replace('T',' ')+'Z', content:b64utf8(json)};
-  if(cloud.sha) body.sha=cloud.sha;
-  return gh('PUT','/contents/'+CPATH,body).then(r=>{
-    if(r.status!==409 && r.status!==422) return r;
-    return cloudDataSha().then(sha=>{ if(sha) body.sha=sha; else delete body.sha; return gh('PUT','/contents/'+CPATH,body); });
-  }).then(okJson).then(j=>{ cloud.sha=(j.content&&j.content.sha)||''; });
+async function fetchRemote(repo,token){
+  const G=(m,p,b,a)=>ghFetch(repo||cloud.repo, token||cloud.token, m,p,b,a);
+  const r=await G('GET','/contents/'+CPATH,null,'application/vnd.github.object+json');
+  if(r.status===404 || r.status===409) return {sha:'', st:null, when:0};
+  if(!r.ok) throw ghErr(r);
+  const j=await r.json(); let txt='';
+  if(j.content && j.encoding==='base64') txt=b64decodeUtf8(j.content);
+  else { const r2=await G('GET','/git/blobs/'+j.sha,null,'application/vnd.github.raw+json'); if(!r2.ok) throw ghErr(r2); txt=await r2.text(); }
+  let st=null, when=0; try{ const o=JSON.parse(txt); st=normalize(o); when=Date.parse(o.saved||o.exported||'')||0; }catch(e){}
+  return {sha:j.sha||'', st, when};
+}
+async function putRemote(json, sha){
+  const body={message:'Sync '+new Date().toISOString().slice(0,16).replace('T',' ')+'Z', content:b64utf8(json)}; if(sha) body.sha=sha;
+  const r=await gh('PUT','/contents/'+CPATH,body);
+  if(r.status===409 || r.status===422) return 'conflict';
+  if(!r.ok) throw ghErr(r);
+  return 'ok';
+}
+const extOf = t => t==='application/pdf' ? 'pdf' : t==='image/png' ? 'png' : 'jpg';
+async function uploadFile(f){
+  const body={message:'File '+f.id, content:f.data.slice(f.data.indexOf(',')+1)};
+  const r=await gh('PUT','/contents/files/'+f.id+'.'+extOf(f.type),body);
+  if(!(r.ok || r.status===422)) throw ghErr(r);
+}
+async function downloadFile(ref){
+  const r=await gh('GET','/contents/files/'+ref.id+'.'+extOf(ref.t),null,'application/vnd.github.raw+json');
+  if(r.status===404) return null;
+  if(!r.ok) throw ghErr(r);
+  const data=await readAsDataURL(await r.blob()), type=ref.t||'image/jpeg';
+  const fixed='data:'+type+';base64,'+data.slice(data.indexOf(',')+1);
+  const rec={id:ref.id, type, name:ref.n||'file', data:fixed, thumb:await thumbFor(type,fixed), created:now()};
+  await filePut(rec); if(rec.thumb) thumbCache.set(rec.id,rec.thumb);
+  const up=new Set(cloud.up); up.add(ref.id); cloud.up=[...up];
+  return rec;
+}
+async function syncFiles(){
+  const refs=allFileRefs(), up=new Set(cloud.up); let n=0, m=0, got=false;
+  for(const ref of refs.values()){
+    if(up.has(ref.id)) continue;
+    const f=await fileGet(ref.id);
+    if(f){ if(n>=6) continue; n++; if(n>1) await sleep(700); await uploadFile(f); up.add(ref.id); cloud.up=[...up]; saveCloud(); }
+    else if(m<6){ m++; try{ if(await downloadFile(ref)) got=true; }catch(e){} }
+  }
+  if(got) render();
+}
+function scheduleSync(ms){ if(!cloud.on) return; clearTimeout(syncTimer); syncTimer=setTimeout(()=>syncRun(), ms); }
+async function syncRun(manual){
+  if(!cloud.on || syncBusy) return false;
+  if(!manual && (navigator.onLine===false || now()<cloudRetryAt)) return false;
+  syncBusy=true; lastSyncTry=now(); cloudPaint();
+  try{
+    for(let i=0;i<3;i++){
+      const rem=await fetchRemote(), loc=localState();
+      const merged=rem.st ? mergeStates(loc, rem.st) : loc, mk=stateKey(merged);
+      if(mk!==stateKey(loc)) applyState(merged);
+      if(!rem.st || mk!==stateKey(rem.st)){
+        const res=await putRemote(JSON.stringify(Object.assign({app:'household-logbook', v:2, saved:new Date().toISOString()}, merged)), rem.sha);
+        if(res==='conflict'){ await sleep(500+Math.random()*800); continue; }
+      }
+      break;
+    }
+    cloud.last=now(); cloud.err=''; cloud.kind=''; cloudRetryAt=0; saveCloud();
+    await syncFiles();
+    return true;
+  }catch(e){ cloudFail(e); return false; }
+  finally{ syncBusy=false; saveCloud(); cloudPaint(); }
 }
 function cloudFail(e){
-  const st=e&&e.status, now=Date.now();
-  if(!st){ cloud.err=''; cloud.kind='net'; cloudRetryAt=now+60000; return; }
-  if(st===429){ cloud.err=''; cloud.kind='wait'; cloudRetryAt=now+900000; return; }
-  if(st===401){ cloud.kind='auth'; cloud.err='GitHub no longer accepts the access token. It may have expired. Make a new one and enter it in Online backup.'; cloudRetryAt=now+1800000; }
-  else if(st===403||st===404){ cloud.kind='access'; cloud.err='The token can’t write to '+cloud.repo+'. It needs Contents: Read and write for that repository.'; cloudRetryAt=now+1800000; }
-  else { cloud.kind='other'; cloud.err='GitHub had a problem ('+st+'). The app will try again.'; cloudRetryAt=now+300000; }
+  const st=e&&e.status, t=now();
+  if(!st){ cloud.err=''; cloud.kind='net'; cloudRetryAt=t+60000; return; }
+  if(st===429){ cloud.err=''; cloud.kind='wait'; cloudRetryAt=t+900000; return; }
+  if(st===401){ cloud.kind='auth'; cloud.err='GitHub no longer accepts the access token. It may have expired. Make a new one and enter it in Sync & backup.'; cloudRetryAt=t+1800000; }
+  else if(st===403||st===404){ cloud.kind='access'; cloud.err='The token can’t write to '+cloud.repo+'. It needs Contents: Read and write for that repository.'; cloudRetryAt=t+1800000; }
+  else { cloud.kind='other'; cloud.err='GitHub had a problem ('+st+'). The app will try again.'; cloudRetryAt=t+300000; }
 }
-function cloudRun(p){
-  if(cloudBusy || !cloud.on) return Promise.resolve(false);
-  p=p||cloudPending(); cloudBusy=true; cloudPaint();
-  const chain = p.h===cloud.hash ? Promise.resolve() : cloudPutData(p.json).then(()=>{ cloud.hash=p.h; cloud.last=Date.now(); });
-  return chain.then(()=>{ cloud.err=''; cloud.kind=''; cloudRetryAt=0; return true; }, e=>{ cloudFail(e); return false; })
-    .then(ok=>{ cloudBusy=false; saveCloud(); cloudPaint(); return ok; });
-}
-function cloudMaybe(){
-  if(!cloud.on || cloudBusy || navigator.onLine===false || Date.now()<cloudRetryAt) return;
-  const p=cloudPending(), now=Date.now();
-  if(p.h!==cloudTickHash){ cloudTickHash=p.h; cloudChangedAt=now; }
-  // a minute after the last change, and not more often than every few minutes
-  if(p.h!==cloud.hash && now-cloudChangedAt>=CLOUD_QUIET && now-cloud.last>=CLOUD_GAP) cloudRun(p);
-}
-function cloudNudge(){ if(cloud.on) setTimeout(cloudMaybe, 50); }
 function cloudStatus(){
   if(!cloud.on) return {txt:'Off', bad:false};
-  if(cloudBusy) return {txt:'Backing up…', busy:true};
+  if(syncBusy) return {txt:'Syncing…', busy:true};
   if(cloud.err) return {txt:cloud.err, bad:true};
-  let t = cloud.last ? 'Last backup '+whenLocal(cloud.last) : 'Not backed up yet';
-  if(cloudPending().h!==cloud.hash) t += navigator.onLine===false||cloud.kind==='net' ? ' · changes waiting for internet' : ' · changes go up within a few minutes';
+  let t = cloud.last ? 'Last synced '+whenLocal(cloud.last) : 'Not synced yet';
+  if(navigator.onLine===false || cloud.kind==='net') t+=' · waiting for internet';
   return {txt:t, bad:false};
 }
-function cloudMenuText(){ if(!cloud.on) return 'Off: back up automatically to GitHub'; const s=cloudStatus(); return s.bad?'Needs attention':s.txt; }
+function cloudMenuText(){ if(!cloud.on) return 'Off: back up and share through GitHub'; const s=cloudStatus(); return s.bad?'Needs attention':s.txt; }
 function cloudPaint(){
   const el=$('#cloudStat'); if(el){ const s=cloudStatus(); el.className='cl-stat'+(s.bad?' bad':''); el.innerHTML='<b>Status</b>'+esc(s.txt); }
   const m=$('#cloudMenu'); if(m) m.textContent=cloudMenuText();
 }
 function ghOwnerGuess(){ const m=/^([a-z0-9-]+)\.github\.io$/i.exec(location.hostname); return m ? m[1]+'/household-backup' : ''; }
+function setupCode(){ return 'HH1:'+btoa(JSON.stringify({r:cloud.repo, t:cloud.token})); }
 function openCloud(){
   if(!cloud.on){
-    showSheet('<h3 id="sheetTitle">Online backup</h3><p class="hint">While the app is open and online, it saves a copy of everything to a private GitHub repository about a minute after you change something. GitHub keeps every version, so you can go back to an earlier one.</p>'+
-      '<details class="howto"><summary>How to set it up (once, about 5 minutes)</summary><ol>'+
+    showSheet('<h3 id="sheetTitle">Sync & backup</h3><p class="hint">While the app is open and online, it keeps your logbook in a private GitHub repository: a backup of every version, and the way a second iPhone shares the same logbook. Changes go up a few seconds after you make them; the other iPhone picks them up within a minute while it’s open.</p>'+
+      '<details class="howto"><summary>First iPhone: set it up (once, about 5 minutes)</summary><ol>'+
       '<li>On github.com tap <b>+</b> → <b>New repository</b>. Name it, e.g. <b>household-backup</b>, choose <b>Private</b>, and create it.</li>'+
       '<li>Profile picture → <b>Settings</b> → <b>Developer settings</b> → <b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b>.</li>'+
       '<li>Choose an expiration. Under <b>Repository access</b> pick <b>Only select repositories</b> and your backup repository. Under <b>Permissions</b> set <b>Contents</b> to <b>Read and write</b>.</li>'+
       '<li>Tap <b>Generate token</b>, copy it, and paste it below with the repository name.</li></ol></details>'+
+      '<details class="howto"><summary>Second iPhone: use a setup code</summary><p class="hint" style="margin-top:6px">On the first iPhone open Sync & backup → Set up another iPhone, and send the code to this phone. Paste it below; the repository fills in by itself.</p></details>'+
       '<label class="fld"><span>Repository</span><input id="fRepo" type="text" value="'+esc(cloud.repo||ghOwnerGuess())+'" placeholder="yourname/household-backup" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off"></label>'+
-      '<label class="fld"><span>Access token</span><input id="fTok" type="password" placeholder="github_pat_…" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off"></label>'+
+      '<label class="fld"><span>Access token or setup code</span><input id="fTok" type="password" placeholder="github_pat_… or HH1:…" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off"></label>'+
       '<p class="hint">The token stays on this iPhone and isn’t part of file backups.</p>'+
       '<div class="sheet-foot"><span class="sp"></span><button class="btn ghost" type="button" data-act="close">Cancel</button><button class="btn" type="button" data-act="cloudconnect" id="connBtn">Connect</button></div>','cloud');
+    $('#fTok').addEventListener('input',e=>{ const v=e.target.value.trim(); if(/^HH1:/.test(v)){ try{ const o=JSON.parse(atob(v.slice(4))); if(o.r) $('#fRepo').value=o.r; }catch(_){} } });
     return;
   }
-  showSheet('<h3 id="sheetTitle">Online backup</h3><div class="cl-stat" id="cloudStat"></div><p class="hint">To the private repository <b>'+esc(cloud.repo)+'</b> on GitHub.</p>'+
-    '<div class="sheet-foot"><button class="btn" type="button" data-act="cloudnow">Back up now</button><button class="btn ghost" type="button" data-act="cloudrestore">Restore…</button></div>'+
-    '<div class="menu">'+(cloud.kind==='auth'||cloud.kind==='access'?'<button type="button" data-act="cloudtoken">Enter a new token</button>':'')+
-    '<button type="button" data-act="cloudoff">Turn off<small>Removes the token from this iPhone. Your backups stay on GitHub.</small></button></div>'+
+  showSheet('<h3 id="sheetTitle">Sync & backup</h3><div class="cl-stat" id="cloudStat"></div><p class="hint">Through the private repository <b>'+esc(cloud.repo)+'</b>. Every iPhone connected to it shares the same logbook, photos and documents.</p>'+
+    '<div class="sheet-extra"><button class="btn" type="button" data-act="cloudnow">Sync now</button><button class="btn ghost" type="button" data-act="cloudrestore">Restore an earlier version…</button></div>'+
+    '<div class="menu"><button type="button" data-act="cloudpair">Set up another iPhone<small>Get a setup code for your wife’s phone or a new phone</small></button>'+
+    (cloud.kind==='auth'||cloud.kind==='access'?'<button type="button" data-act="cloudtoken">Enter a new token</button>':'')+
+    '<button type="button" data-act="cloudoff">Turn off on this iPhone<small>Removes the token from this phone. The logbook stays here and on GitHub.</small></button></div>'+
     '<div class="sheet-foot"><span class="sp"></span><button class="btn ghost" type="button" data-act="close">Close</button></div>','cloud');
   cloudPaint();
 }
-function cloudConnect(btn){
-  const repo=($('#fRepo').value||'').trim().replace(/^https?:\/\/github\.com\//i,'').replace(/\.git$/,'').replace(/\/+$/,''), tok=($('#fTok').value||'').trim();
+function openPair(){
+  const code=setupCode();
+  showSheet('<h3 id="sheetTitle">Set up another iPhone</h3><p class="hint">On the other iPhone: open danipuskas.github.io/Household in Safari and add it to the Home Screen. Open it, tap the settings button → Sync & backup, paste this code in “Access token or setup code”, tap Connect, then choose <b>Use the shared logbook</b>.</p>'+
+    '<div class="code-box" id="pairCode">'+esc(code)+'</div><p class="hint">The code contains your access token. Send it privately, for example by AirDrop.</p>'+
+    '<div class="sheet-foot"><button class="btn ghost" type="button" data-act="cloud">Back</button><span class="sp"></span><button class="btn ghost" type="button" data-act="paircopy">Copy</button>'+(navigator.share?'<button class="btn" type="button" data-act="pairshare">Share</button>':'')+'</div>','pair');
+  SH.code=code;
+}
+async function cloudConnect(btn){
+  let repo=($('#fRepo').value||'').trim().replace(/^https?:\/\/github\.com\//i,'').replace(/\.git$/,'').replace(/\/+$/,''), tok=($('#fTok').value||'').trim();
+  if(/^HH1:/.test(tok)){ try{ const o=JSON.parse(atob(tok.slice(4))); repo=o.r||repo; tok=o.t||''; }catch(_){ toast('That setup code is incomplete. Copy it again.'); return; } }
   if(!/^[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/.test(repo)){ toast('Enter the repository as yourname/repository'); $('#fRepo').focus(); return; }
-  if(!tok){ toast('Paste the access token'); $('#fTok').focus(); return; }
+  if(!tok){ toast('Paste the access token or setup code'); $('#fTok').focus(); return; }
   btn.disabled=true; btn.textContent='Connecting…';
-  const fail=m=>{ throw new Error(m); };
-  ghFetch(repo,tok,'GET','',null).then(r=>{
-    if(r.status===401) fail('GitHub didn’t accept the token. Check you copied all of it.');
-    if(r.status===403||r.status===404) fail('Repository not found. Check the name, and that the token has access to it.');
-    if(!r.ok) fail('GitHub answered '+r.status+'. Try again in a moment.');
-    return r.json();
-  }, ()=>fail('No connection to GitHub. Check the internet and try again.')).then(j=>{
-    if(!j.private) fail('That repository is public. Make it private first, so your data stays private.');
-    return ghFetch(repo,tok,'GET','/commits?path='+CPATH+'&per_page=1',null).then(r=>r.status===409?[]:okJson(r));
-  }).then(list=>{
-    cloud={repo, token:tok, on:true, sha:'', hash:'', last:0, err:'', kind:''}; cloudRetryAt=0; saveCloud();
-    if(!list.length){ closeSheet(); cloudRun().then(ok=>{ toast(ok?'Online backup is on':'Online backup is on, but the first backup didn’t work yet',3000); render(); }); return; }
-    const when=list[0].commit&&list[0].commit.committer?Date.parse(list[0].commit.committer.date):0;
-    showSheet('<h3 id="sheetTitle">Backup found</h3><p class="hint">'+esc(repo)+' already has a backup'+(when?' from '+esc(whenLocal(when)):'')+'. What would you like to do?</p>'+
-      '<div class="menu"><button type="button" data-act="cloudget" data-v="'+esc(list[0].sha)+'">Restore it to this iPhone<small>Replaces what’s on this iPhone</small></button>'+
-      '<button type="button" data-act="cloudput">Back up this iPhone<small>The backup on GitHub becomes an older version</small></button></div>'+
-      '<div class="sheet-foot"><span class="sp"></span><button class="btn ghost" type="button" data-act="cloudcancel">Cancel</button></div>','cloudfound');
-  }).catch(e=>{ if(btn.isConnected){ btn.disabled=false; btn.textContent='Connect'; } toast(e.message,4500); });
+  try{
+    let r; try{ r=await ghFetch(repo,tok,'GET','',null); }catch(_){ throw new Error('No connection to GitHub. Check the internet and try again.'); }
+    if(r.status===401) throw new Error('GitHub didn’t accept the token. Check you copied all of it.');
+    if(r.status===403||r.status===404) throw new Error('Repository not found. Check the name, and that the token has access to it.');
+    if(!r.ok) throw new Error('GitHub answered '+r.status+'. Try again in a moment.');
+    const j=await r.json(); if(!j.private) throw new Error('That repository is public. Make it private first, so your data stays private.');
+    const rem=await fetchRemote(repo,tok), cfg={repo, token:tok, on:true, last:0, err:'', kind:'', up:[]};
+    if(!rem.st){ cloud=cfg; cloudRetryAt=0; saveCloud(); closeSheet(); const ok=await syncRun(true); toast(ok?'Sync & backup is on':'Sync is on, but the first sync didn’t work yet',3000); render(); return; }
+    const cnt=COLS.reduce((s,c)=>s+rem.st.data[c].length,0);
+    showSheet('<h3 id="sheetTitle">Shared logbook found</h3><p class="hint">'+esc(repo)+' already has a logbook with '+cnt+' entries'+(rem.when?', last saved '+esc(whenLocal(rem.when)):'')+'.</p>'+
+      '<div class="menu"><button type="button" data-act="cloudget">Use the shared logbook<small>For a second iPhone or a new phone: this phone’s entries are replaced</small></button>'+
+      '<button type="button" data-act="cloudmerge">Combine with this iPhone<small>Keeps both. Use it only if this phone has its own entries to add</small></button></div>'+
+      '<div class="sheet-foot"><span class="sp"></span><button class="btn ghost" type="button" data-act="close">Cancel</button></div>','cloudfound');
+    SH.rem=rem; SH.cfg=cfg;
+  }catch(e){ if(btn.isConnected){ btn.disabled=false; btn.textContent='Connect'; } toast(e.message,4500); }
+}
+async function cloudUseShared(){
+  const rem=SH && SH.rem, cfg=SH && SH.cfg; closeSheet(); if(!rem || !rem.st || !cfg) return;
+  cloud=cfg; cloudRetryAt=0; saveCloud(); applyState(rem.st); toast('Getting the shared logbook…'); const ok=await syncRun(true); render(); toast(ok?'This iPhone now shares the logbook':'Connected. The first sync didn’t finish yet',3000);
 }
 function openCloudRestore(){
-  showSheet('<h3 id="sheetTitle">Restore from online backup</h3><p class="hint">Choose a version. It replaces everything on this iPhone.</p>'+
+  showSheet('<h3 id="sheetTitle">Restore an earlier version</h3><p class="hint">Choose a version. It replaces the logbook'+(cloud.on?' on every synced iPhone':'')+'. Photos and documents stay as they are.</p>'+
     '<div class="vers" id="cvList"><p class="hint" style="margin:12px 14px">Loading versions…</p></div>'+
     '<div class="sheet-foot"><span class="sp"></span><button class="btn ghost" type="button" data-act="close">Close</button></div>','cloudrestore');
-  gh('GET','/commits?path='+CPATH+'&per_page=20').then(r=>r.status===409?[]:okJson(r)).then(list=>{
+  gh('GET','/commits?path='+CPATH+'&per_page=30').then(r=>r.status===409?[]:okJson(r)).then(list=>{
     const box=$('#cvList'); if(!box) return;
-    if(!list.length){ box.innerHTML='<p class="hint" style="margin:12px 14px">No online backups yet.</p>'; return; }
-    box.innerHTML=list.map((c,i)=>{ const t=Date.parse(c.commit.committer.date), d=new Date(t);
-      return '<button type="button" data-act="cloudver" data-v="'+esc(c.sha)+'"'+(i===0?' data-latest="1"':'')+'><b>'+esc(d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}))+'</b><span>'+esc(d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}))+'</span>'+(i===0?'<small>Latest</small>':'')+'</button>'; }).join('');
+    if(!list.length){ box.innerHTML='<p class="hint" style="margin:12px 14px">No versions yet.</p>'; return; }
+    box.innerHTML=list.map((c,i)=>{ const d=new Date(Date.parse(c.commit.committer.date));
+      return '<button type="button" data-act="cloudver" data-v="'+esc(c.sha)+'"><b>'+esc(d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}))+'</b><span>'+esc(fHM(d.getTime()))+'</span>'+(i===0?'<small>Latest</small>':'')+'</button>'; }).join('');
   }).catch(e=>{ const box=$('#cvList'); if(box) box.innerHTML='<p class="hint" style="margin:12px 14px">'+(e&&e.status===401?'GitHub didn’t accept the token.':'Couldn’t load the versions. Check the internet and try again.')+'</p>'; });
 }
-function cloudRestore(sha,latest){
+async function cloudRestore(sha){
   toast('Restoring…',60000);
-  return gh('GET','/contents/'+CPATH+'?ref='+encodeURIComponent(sha),null,'application/vnd.github.raw+json').then(r=>{ if(!r.ok) throw ghErr(r); return r.text(); }).then(txt=>{
-    let o=null; try{ o=normalize(JSON.parse(txt)); }catch(e){}
-    if(!o) throw new Error('bad');
-    applyRestore(o,'Restored from the online backup');
-    if(latest){ const p=cloudPending(); cloud.hash=p.h; cloudTickHash=p.h; saveCloud(); }
-  }).catch(e=>toast(e&&e.status===401?'GitHub didn’t accept the token':'Couldn’t restore. Check the internet and try again.',3500));
+  try{
+    const r=await gh('GET','/contents/'+CPATH+'?ref='+encodeURIComponent(sha),null,'application/vnd.github.raw+json');
+    if(!r.ok) throw ghErr(r);
+    const o=normalize(JSON.parse(await r.text())); if(!o) throw new Error('bad');
+    applyState(restoreState(o)); window.scrollTo(0,0);
+    await syncRun(true); toast('Restored that version',3000);
+  }catch(e){ toast(e&&e.status===401?'GitHub didn’t accept the token':'Couldn’t restore. Check the internet and try again.',3500); }
 }
 
 /* ---------- navigation & events ---------- */
 function go(v){ if(!VIEWS.includes(v)) v='overview'; S.view=v; try{ if(location.hash!=='#'+v) history.replaceState(null,'','#'+v); }catch(_){} saveUi({view:v}); render(); window.scrollTo(0,0); }
 function readHash(){ const h=(location.hash||'').slice(1); if(VIEWS.includes(h)) S.view=h; }
 window.addEventListener('hashchange', ()=>{ const before=S.view; readHash(); if(before!==S.view){ render(); window.scrollTo(0,0); } });
-document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('#sheetWrap').hidden) closeSheet(); });
+document.addEventListener('keydown', e=>{ if(e.key!=='Escape') return; if(!$('#viewer').hidden) return closeViewer(); if(!$('#sheetWrap').hidden) closeSheet(); });
 document.addEventListener('click', e=>{
   const el=e.target.closest('[data-act]'); if(!el) return;
   const a=el.dataset.act;
@@ -1225,35 +1740,52 @@ document.addEventListener('click', e=>{
     case 'settings': return openForm('settings',{});
     case 'chooser': return openChooser();
     case 'menu': return openMenu();
+    case 'search': return openSearch();
     case 'carsel': S.carSel=el.dataset.id; return render();
-    case 'cal': { const n=+el.dataset.d; if(n===0){ const t=today(); S.calMonth=new Date(t.getFullYear(),t.getMonth(),1); S.calSel=iso(t); } else { S.calMonth=new Date(S.calMonth.getFullYear(),S.calMonth.getMonth()+n,1); S.calSel=null; } return render(); }
+    case 'famseg': S.famSeg=el.dataset.v; saveUi({famSeg:S.famSeg}); return render();
+    case 'cal': { const n=+el.dataset.d; if(n===0){ const t=today(); S.calMonth=monthStart(t); S.calSel=iso(t); } else { S.calMonth=new Date(S.calMonth.getFullYear(),S.calMonth.getMonth()+n,1); S.calSel=null; } return render(); }
     case 'cday': S.calSel = S.calSel===el.dataset.d ? null : el.dataset.d; return render();
+    case 'weekday': { const d=parse(el.dataset.d); S.calMonth=monthStart(d); S.calSel=el.dataset.d; return go('calendar'); }
     case 'allmonth': S.calSel=null; return render();
     case 'cfilt': S.calFilter[el.dataset.k]=!S.calFilter[el.dataset.k]; return render();
     case 'copy': return copyText(el.dataset.text, el);
     case 'del': return confirmTap(el, del);
-    case 'notenow': saveUi({backupNoteUntil:Date.now()+14*86400000}); return render();
+    case 'notenow': saveUi({backupNoteUntil:now()+14*86400000}); return render();
     case 'update': location.reload(); return;
+    case 'viewfile': return openViewer(el.dataset.id);
+    case 'rmfile': if(SH && SH.files){ SH.files=SH.files.filter(f=>f.id!==el.dataset.id); renderAtt(); } return;
+    case 'vclose': return closeViewer();
+    case 'vshare': return shareViewer();
+    case 'icsall': return openIcs(upcomingEvents(),'everything with a date in the next 12 months');
+    case 'icsitem': if(SH && SH.rec && SH.def){ const r=find(SH.def.col,SH.rec.id)||SH.rec; return openIcs(itemEvents(SH.def.col,r), SH.def.col==='docs'?docTitle(r):(r.title||r.name||carName(r))); } return;
+    case 'icsopen': return icsOpen();
+    case 'icsshare': return icsShare();
+    case 'roster': return openRoster();
+    case 'rosgo': return rosterSave();
+    case 'rosclear': return confirmTap(el, ()=>{ S.data.roster.map(r=>r.id).forEach(id=>delDoc('roster',id)); closeSheet(); commit(); toast('Roster removed'); });
     case 'export': return openExport();
     case 'sharefile': return shareFile();
-    case 'copyjson': saveUi({lastFileBackup:Date.now()}); return copyText(SH && SH.json || backupJson(), null, 'Backup copied. Paste it into Notes or Files.');
+    case 'copyjson': saveUi({lastFileBackup:now()}); return copyText(SH && SH.json || '', null, 'Backup copied. Paste it into Notes or Files.');
     case 'import': return openImport();
     case 'restorefile': return confirmTap(el, restoreFromText);
     case 'cloud': return openCloud();
     case 'cloudconnect': return cloudConnect(el);
-    case 'cloudnow': cloudRetryAt=0; if(cloudBusy) return toast('Already backing up'); return cloudRun().then(ok=>toast(ok?'Backed up':(cloud.kind==='net'?'No internet connection':'Backup didn’t work')));
+    case 'cloudnow': if(syncBusy) return toast('Already syncing'); return syncRun(true).then(ok=>toast(ok?'Synced':(cloud.kind==='net'?'No internet connection':'Sync didn’t work')));
     case 'cloudrestore': return openCloudRestore();
-    case 'cloudver': return confirmTap(el, b=>{ closeSheet(); cloudRestore(b.dataset.v, !!b.dataset.latest); });
-    case 'cloudget': closeSheet(); return cloudRestore(el.dataset.v, true);
-    case 'cloudput': closeSheet(); return cloudRun().then(ok=>{ toast(ok?'Online backup is on':'Backup didn’t work yet',3000); render(); });
-    case 'cloudcancel': cloud.on=false; cloud.token=''; saveCloud(); return closeSheet();
+    case 'cloudver': return confirmTap(el, b=>{ const sha=b.dataset.v; closeSheet(); cloudRestore(sha); });
+    case 'cloudget': return cloudUseShared();
+    case 'cloudmerge': { const cfg=SH && SH.cfg; closeSheet(); if(!cfg) return; cloud=cfg; cloudRetryAt=0; saveCloud(); } return syncRun(true).then(ok=>{ toast(ok?'Combined and synced':'Sync didn’t work yet',3000); render(); });
     case 'cloudtoken': cloud.on=false; cloud.token=''; saveCloud(); return openCloud();
-    case 'cloudoff': return confirmTap(el, ()=>{ cloud.on=false; cloud.token=''; cloud.err=''; cloud.kind=''; saveCloud(); closeSheet(); render(); toast('Online backup is off'); });
+    case 'cloudpair': return openPair();
+    case 'paircopy': return copyText(SH && SH.code || '', el, 'Setup code copied');
+    case 'pairshare': return navigator.share({title:'Household setup code', text:SH && SH.code || ''}).catch(()=>{});
+    case 'cloudoff': return confirmTap(el, ()=>{ cloud.on=false; cloud.token=''; cloud.err=''; cloud.kind=''; saveCloud(); closeSheet(); render(); toast('Sync is off on this iPhone'); });
   }
 });
 
 /* ---------- render ---------- */
 function render(){
+  buildDuty();
   document.querySelectorAll('[data-act="tab"]').forEach(b=>{ if(b.classList.contains('tab')||b.classList.contains('tb')) b.setAttribute('aria-current', b.dataset.v===S.view?'page':'false'); });
   $('#hdrDate').textContent=fDate(today(),{day:'numeric',month:'short'});
   $('#updBtn').hidden=!updAvail;
@@ -1261,39 +1793,37 @@ function render(){
   let html;
   try{ html=fn(); }catch(err){ console.error(err); html='<div class="note"><span class="sp">This view hit a problem drawing your data. Other tabs still work.</span></div>'; }
   $('#app').innerHTML=(storageOK?'':'<div class="note"><span class="sp">Storage isn’t available here, so changes won’t be kept.</span></div>')+html;
+  $('#app').querySelectorAll('.att-in').forEach(s=>{ s.style.display='contents'; });
+  hydrateThumbs($('#app'));
 }
 
 /* ---------- start ---------- */
 (function boot(){
-  const t=today(); S.calMonth=new Date(t.getFullYear(), t.getMonth(), 1);
+  S.calMonth=monthStart(today());
   if(!loadAll()){ if(storageOK){ seed(); persist(); } }
-  const ui=loadUi(); if(ui.view && VIEWS.includes(ui.view)) S.view=ui.view;
+  const ui=loadUi(); if(ui.view && VIEWS.includes(ui.view)) S.view=ui.view; if(ui.famSeg) S.famSeg=ui.famSeg;
   readHash(); render();
-  // ask iOS to keep the data even when storage runs low
   try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); }catch(_){}
-  let rz=0, lastW=window.innerWidth; window.addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(()=>{ if(Math.abs(window.innerWidth-lastW)>40){ lastW=window.innerWidth; if(S.view==='money') render(); } },200); });
-  // re-draw when the day changes while the app stays open
+  setTimeout(()=>{ cleanFiles().catch(()=>{}); }, 8000);
   let lastDay=iso(today());
   document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && iso(today())!==lastDay){ lastDay=iso(today()); render(); } });
-  // online backup: about a minute after changes, when leaving the app, and when the connection returns
-  setInterval(cloudMaybe,30000);
-  setTimeout(()=>{ if(!cloud.on) return; const p=cloudPending(); cloudTickHash=p.h; cloudChangedAt=Date.now()-CLOUD_QUIET; cloudMaybe(); if(cloud.kind==='auth'||cloud.kind==='access') render(); },5000);
-  window.addEventListener('online',()=>{ cloudRetryAt=0; cloudMaybe(); });
-  document.addEventListener('visibilitychange',()=>{
-    if(!cloud.on || cloudBusy) return;
-    if(document.visibilityState==='visible'){ cloudMaybe(); return; }
-    if(navigator.onLine!==false && Date.now()>=cloudRetryAt){ const p=cloudPending(); if(p.h!==cloud.hash) cloudRun(p); }
-  });
+  let rz=0, lastW=window.innerWidth; window.addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(()=>{ if(Math.abs(window.innerWidth-lastW)>40){ lastW=window.innerWidth; if(S.view==='money') render(); } },200); });
+  // sync: on start, every minute while open, a few seconds after a change, when leaving the app, and when the connection returns
+  setTimeout(()=>syncRun(), 1500);
+  setInterval(()=>{ if(document.visibilityState==='visible' && now()-lastSyncTry>55000) syncRun(); }, 15000);
+  window.addEventListener('online',()=>{ cloudRetryAt=0; syncRun(); });
+  document.addEventListener('visibilitychange',()=>{ if(!cloud.on) return; if(document.visibilityState==='visible'){ if(now()-lastSyncTry>20000) syncRun(); } else syncRun(); });
   // updates: a new version downloads in the background and is used at the next start, or now with Update
   if('serviceWorker' in navigator && location.protocol==='https:'){
     let hadCtl=!!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(!hadCtl){ hadCtl=true; return; } updAvail=true; $('#updBtn').hidden=false; });
     navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{});
     let swChk=0;
-    document.addEventListener('visibilitychange',()=>{ if(document.visibilityState!=='visible'||navigator.onLine===false||Date.now()-swChk<15*60000) return; swChk=Date.now(); navigator.serviceWorker.getRegistration().then(r=>{ if(r) r.update(); }).catch(()=>{}); });
+    document.addEventListener('visibilitychange',()=>{ if(document.visibilityState!=='visible'||navigator.onLine===false||now()-swChk<15*60000) return; swChk=now(); navigator.serviceWorker.getRegistration().then(r=>{ if(r) r.update(); }).catch(()=>{}); });
   }
 })();
 })();
+
 </script>
 </body>
 </html>

@@ -1,9 +1,10 @@
 // Offline cache: serves the app from the iPhone and checks GitHub for a newer version when online.
-const CACHE = 'household-v1';
+const CACHE = 'household-v2';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png',
   './fonts/barlow-condensed-600.woff', './fonts/barlow-condensed-700.woff',
   './fonts/plex-sans-400.woff', './fonts/plex-sans-500.woff', './fonts/plex-sans-600.woff',
-  './fonts/plex-mono-400.woff', './fonts/plex-mono-500.woff'];
+  './fonts/plex-mono-400.woff', './fonts/plex-mono-500.woff',
+  './lib/pdf.js', './lib/pdf.worker.js'];
 
 self.addEventListener('install', e => {
   // cache: 'reload' skips the browser's HTTP cache, so a new version never stores stale files
