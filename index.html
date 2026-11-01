@@ -379,7 +379,7 @@ mark{background:var(--soon-bg);color:inherit;border-radius:3px;padding:0 1px}
 <script>
 (function(){
 'use strict';
-var APP_VERSION='3';
+var APP_VERSION='4';
 
 /* ---------- utilities ---------- */
 const $ = s => document.querySelector(s);
@@ -872,8 +872,8 @@ function vHome(){
   (asNeeded.length ? '<section class="sec"><div class="sh"><h2>As needed</h2></div><div class="panel">'+asNeeded.map(maintRow).join('')+'</div></section>' : '')+
   '<section class="sec"><div class="sh"><h2>Companies</h2><span class="sp"></span>'+addBtn('companies','+ Add')+'</div>'+
     '<div class="panel">'+(comps.length ? comps.map(compRow).join('') : emptyBox('No companies saved','Keep the ones that did a good job, with their number, so you can book them again.', addBtn('companies','Add a company')))+'</div></section>'+
-  '<section class="sec"><div class="sh"><h2>Service history</h2></div>'+
-    '<div class="panel">'+(hist.length ? hist.map(histRow).join('') : emptyBox('Nothing logged yet','Each time you mark a job done, it is recorded here with the date, company, cost and any invoice photo.'))+'</div></section>';
+  '<section class="sec"><div class="sh"><h2>Service history</h2><span class="sp"></span>'+addBtn('history','+ Log past job',' data-area="home"')+'</div>'+
+    '<div class="panel">'+(hist.length ? hist.map(histRow).join('') : emptyBox('Nothing logged yet','Log jobs already done, or tap Done on a scheduled one. Each entry keeps the date, company, cost and invoice.', addBtn('history','Log a past job',' data-area="home"')))+'</div></section>';
 }
 function compRow(c){
   const used=S.data.maint.filter(m=>m.companyId===c.id && !m.done).map(m=>m.title);
@@ -919,8 +919,8 @@ function vCar(){
   '<section class="sec"><div class="sh"><h2>Services</h2><span class="sp"></span>'+addBtn('maint','+ Add',' data-area="car"')+'</div>'+
     '<p class="lead">Give each service a date, a km reading, or both. Whichever comes first sets the status.</p>'+
     '<div class="panel">'+(items.length ? items.map(maintRow).join('') : emptyBox('No services scheduled','Add the next scheduled service, tyres, battery or a detailing.', addBtn('maint','Add a service',' data-area="car"')))+'</div></section>'+
-  '<section class="sec"><div class="sh"><h2>Service history</h2><span class="sp"></span>'+(spent?'<span class="d muted">'+money(spent)+' in total</span>':'')+'</div>'+
-    '<div class="panel">'+(hist.length ? hist.map(histRow).join('') : emptyBox('Nothing logged yet','Mark a service done to record the date, km, garage, cost and invoice.'))+'</div></section>';
+  '<section class="sec"><div class="sh"><h2>Service history</h2><span class="sp"></span>'+(spent?'<span class="d muted">'+money(spent)+' in total</span>':'')+addBtn('history','+ Log past service',' data-area="car"')+'</div>'+
+    '<div class="panel">'+(hist.length ? hist.map(histRow).join('') : emptyBox('Nothing logged yet','Log services already done, or tap Done on a scheduled one.', addBtn('history','Log a past service',' data-area="car"')))+'</div></section>';
 }
 
 function vFamily(){
@@ -1212,8 +1212,10 @@ const FORMS = {
       {k:'savedAmount',label:'Saved so far',type:'number',half:1},
       FILES(),
       {k:'notes',label:'Notes',type:'textarea'}]},
-  history:{col:'history', title:()=>'Edit log entry', fields:v=>[
-      {k:'title',label:'What was done',type:'text',req:1},
+  history:{col:'history', title:v=>v.id?'Edit log entry':(v.area==='car'?'Log a past service':'Log a past job'), fields:v=>[
+      ...(v.id?[]:[{k:'maintId',label:v.area==='car'?'Which scheduled service was it? (optional)':'Which scheduled job was it? (optional)',type:'maintsel'}]),
+      {k:'title',label:'What was done',type:'text',ph:v.area==='car'?'e.g. 1-year service, new tyres':'e.g. AC servicing'},
+      ...(v.area==='car'?[{k:'carId',label:'Car',type:'car',req:1}]:[]),
       {k:'date',label:'Date',type:'date',req:1,half:1},{k:'cost',label:'Cost',type:'number',half:1},
       ...(v.area==='car'?[{k:'km',label:'Odometer (km)',type:'number',half:1}]:[]),
       {k:'companyId',label:'Company',type:'company'},FILES(true),{k:'notes',label:'Notes',type:'textarea'}]},
@@ -1238,6 +1240,10 @@ function fieldHtml(f, v){
   if(f.type==='lines') return '<label class="fld">'+L+'<textarea id="'+id+'" name="'+id+'" rows="4">'+esc(Array.isArray(val)?val.join('\n'):val)+'</textarea></label>';
   if(f.type==='textarea') return '<label class="fld">'+L+'<textarea id="'+id+'" name="'+id+'" placeholder="'+esc(f.ph||'')+'">'+esc(val)+'</textarea></label>';
   if(f.type==='select') return '<label class="fld">'+L+'<select id="'+id+'" name="'+id+'">'+f.opts.map(o=>'<option value="'+esc(o[0])+'"'+(String(o[0])===String(val)?' selected':'')+'>'+esc(o[1])+'</option>').join('')+'</select></label>';
+  if(f.type==='maintsel'){
+    const list=S.data.maint.filter(m=>m.area===v.area && !m.done).sort((a,b)=>(a.title||'').localeCompare(b.title||''));
+    return '<label class="fld">'+L+'<select id="'+id+'" name="'+id+'"><option value="">— Not on the schedule —</option>'+list.map(m=>{ const c=m.area==='car'?find('cars',m.carId):null; return '<option value="'+esc(m.id)+'">'+esc(m.title+(c&&S.data.cars.length>1?' · '+carName(c):''))+'</option>'; }).join('')+'</select></label>';
+  }
   if(f.type==='car') return '<label class="fld">'+L+'<select id="'+id+'" name="'+id+'">'+S.data.cars.map(c=>'<option value="'+esc(c.id)+'"'+(c.id===val?' selected':'')+'>'+esc(carName(c))+'</option>').join('')+'</select></label>';
   if(f.type==='company'){
     const opts=[['','— None —']].concat(S.data.companies.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'')).map(c=>[c.id,c.name+(c.trade?' · '+c.trade:'')]));
@@ -1290,6 +1296,12 @@ function openForm(kind, ctx){
       if(area==='car' && !S.data.cars.length){ toast('Add a car first'); return openForm('cars',{}); }
       v={area, dueDate:iso(addMonths(t,1)), everyMonths:area==='home'?6:12, carId:S.carSel||(S.data.cars[0]&&S.data.cars[0].id)};
     }
+    if(kind==='history'){
+      const area=ctx.area==='car'?'car':'home';
+      if(area==='car' && !S.data.cars.length){ toast('Add a car first'); return openForm('cars',{}); }
+      const car=find('cars',S.carSel)||S.data.cars[0];
+      v={area, date:iso(t), carId:car&&car.id, km:''};
+    }
     if(kind==='family') v={date:iso(t), repeat:'yearly', kind:'birthday'};
     if(kind==='docs') v={kind:'passport', remindDays:60};
     if(kind==='recurring') v={every:1, kind:'subscription', payDate:iso(t)};
@@ -1304,6 +1316,7 @@ function openForm(kind, ctx){
     intro=(Array.isArray(rec.steps)&&rec.steps.length ? '<div class="steps">'+rec.steps.map((s,i)=>'<label class="step"><input type="checkbox" id="st'+i+'"><span>'+esc(s)+'</span></label>').join('')+'</div>' : '')+
       '<p class="hint">'+(e>0?'Next due: '+esc(everyText(e).toLowerCase())+' after the date done.':rec.everyKm?'The next km target moves forward by '+num(rec.everyKm)+' km.':e===-1?'Logged in the history. It stays in the As needed list.':'This is a one-off, so it leaves the schedule and stays in the history.')+'</p>';
   }
+  if(kind==='history' && !rec) intro='<p class="hint">Record work that’s already been done. If it was one of your scheduled '+(v.area==='car'?'services':'jobs')+', pick it and its next due date moves on from this date.</p>';
   if(kind==='settings') intro='<p class="hint">Pick the day you’ll check your balance each month, for example the day after salary arrives.</p>';
   const icsBtn = rec && def.col && itemEvents(def.col, rec).length ? '<div class="sheet-extra"><button class="btn sm ghost" type="button" data-act="icsitem">Add to Calendar</button></div>' : '';
   showSheet('<h3 id="sheetTitle">'+esc(def.title(v))+'</h3>'+intro+fieldsHtml(fields,v)+
@@ -1321,7 +1334,7 @@ function openForm(kind, ctx){
 function openChooser(){
   const opt=(f,area,cat,label)=>'<button type="button" data-act="add" data-form="'+f+'"'+(area?' data-area="'+area+'"':'')+' style="--cc:'+CAT[cat].c+'"><i></i>'+label+'</button>';
   showSheet('<h3 id="sheetTitle">Add to the logbook</h3><div class="choose">'+
-    opt('maint','home','home','Home maintenance')+opt('companies','','home','Company')+opt('maint','car','car','Car service')+opt('cars','','car','Car')+
+    opt('maint','home','home','Home maintenance')+opt('companies','','home','Company')+opt('maint','car','car','Car service')+opt('history','car','car','Past car service')+opt('history','home','home','Past home job')+opt('cars','','car','Car')+
     opt('docs','','docs','Document')+opt('family','','family','Family date')+opt('recurring','','money','Recurring payment')+opt('balances','','check','Balance check')+opt('plans','','plans','Long-term plan')+
     '</div><div class="sheet-foot"><span class="sp"></span><button class="btn ghost" type="button" data-act="close">Cancel</button></div>','chooser');
 }
@@ -1364,19 +1377,20 @@ function save(){
   const stamp=iso(today());
   if(newCo && 'companyId' in v) v.companyId=addDoc('companies',{name:newCo, trade:SH.area==='car'?'Garage / dealer':null, created:stamp});
   if(kind==='done'){
-    const m=rec, done=parse(v.doneDate)||today(), every=+m.everyMonths||0;
+    const m=rec, done=parse(v.doneDate)||today();
     addDoc('history',{maintId:m.id, area:m.area, carId:m.carId||null, title:m.title, date:iso(done), cost:v.cost, km:v.km==null?null:v.km, companyId:v.companyId||m.companyId||null, files:v.files||[], notes:v.notes, created:stamp});
-    const upd={lastDone:iso(done), lastCost:v.cost, companyId:v.companyId||m.companyId||null};
-    let msg;
-    if(every===-1){ msg='Logged'; }
-    else if(every>0 || m.everyKm){
-      upd.dueDate = every>0 ? iso(addMonths(done,every)) : null;
-      if(m.everyKm){ if(v.km) upd.dueKm=v.km+m.everyKm; else if(m.dueKm) upd.dueKm=m.dueKm+m.everyKm; }
-      msg='Logged. Next due '+(upd.dueDate?fDate(parse(upd.dueDate)):num(upd.dueKm)+' km');
-    } else { upd.done=true; msg='Logged and removed from the schedule'; }
-    updDoc('maint',m.id,upd);
-    const car=m.carId && find('cars',m.carId);
-    if(car && v.km && (!car.odometer || v.km>+car.odometer)) updDoc('cars',car.id,{odometer:v.km, odometerDate:iso(done)});
+    const msg=rollForward(m, done, v);
+    closeSheet(); commit(); toast(msg); return;
+  }
+  if(kind==='history' && !rec){
+    const m=v.maintId ? find('maint',v.maintId) : null;
+    if(!v.title && m) v.title=m.title;
+    if(!v.title){ err.textContent='Say what was done, or pick the scheduled '+(SH.area==='car'?'service':'job')+'.'; err.hidden=false; return; }
+    const done=parse(v.date)||today();
+    addDoc('history',Object.assign({},v,{area:SH.area, carId:SH.area==='car'?(v.carId||(m&&m.carId)||null):null, maintId:m?m.id:null, created:stamp}));
+    let msg='Logged';
+    if(m && (!m.lastDone || iso(done)>=m.lastDone)) msg=rollForward(m, done, v);
+    else { const car=SH.area==='car' && find('cars',v.carId); if(car && v.km && (!car.odometer || v.km>+car.odometer)) updDoc('cars',car.id,{odometer:v.km, odometerDate:iso(done)}); }
     closeSheet(); commit(); toast(msg); return;
   }
   if(kind==='odo'){ updDoc('cars',rec.id,{odometer:v.odometer, odometerDate:v.odometerDate||stamp}); closeSheet(); commit(); toast('Odometer updated'); return; }
@@ -1384,6 +1398,7 @@ function save(){
     const nv=Object.assign({},S.settings,v); nv.currency=String(nv.currency||'AED').toUpperCase().slice(0,6); nv.checkDay=Math.min(28,Math.max(1,Math.round(+nv.checkDay||1)));
     setSettings(nv); closeSheet(); commit(); toast('Settings saved'); return;
   }
+  if(kind==='history' && !v.title){ err.textContent='Say what was done.'; err.hidden=false; return; }
   if(rec){ updDoc(def.col,rec.id,Object.assign({},v,{updated:stamp})); closeSheet(); commit(); toast('Saved'); return; }
   const data=Object.assign({},v,{created:stamp}); if(kind==='maint') data.area=SH.area;
   const id=addDoc(def.col,data); if(kind==='cars') S.carSel=id;
@@ -1391,6 +1406,21 @@ function save(){
 }
 form.addEventListener('submit', e=>{ e.preventDefault(); if(SH && SH.def) save(); });
 
+/* After a job is done: the next due date (and km) moves on from the date it was really done. */
+function rollForward(m, done, v){
+  const every=+m.everyMonths||0, upd={lastDone:iso(done), lastCost:v.cost==null?null:v.cost, companyId:v.companyId||m.companyId||null};
+  let msg;
+  if(every===-1){ msg='Logged'; }
+  else if(every>0 || m.everyKm){
+    upd.dueDate = every>0 ? iso(addMonths(done,every)) : null;
+    if(m.everyKm){ if(v.km) upd.dueKm=v.km+m.everyKm; else if(m.dueKm) upd.dueKm=m.dueKm+m.everyKm; }
+    msg='Logged. Next due '+(upd.dueDate?fDate(parse(upd.dueDate)):num(upd.dueKm)+' km');
+  } else { upd.done=true; msg='Logged and removed from the schedule'; }
+  updDoc('maint',m.id,upd);
+  const car=m.carId && find('cars',m.carId);
+  if(car && v.km && (!car.odometer || v.km>+car.odometer)) updDoc('cars',car.id,{odometer:v.km, odometerDate:iso(done)});
+  return msg;
+}
 function del(){
   if(!SH || !SH.rec || !SH.def || !SH.def.col) return;
   const col=SH.def.col, id=SH.rec.id;
