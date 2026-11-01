@@ -1,5 +1,5 @@
 // Offline cache: serves the app from the iPhone and checks GitHub for a newer version when online.
-const CACHE = 'household-v2';
+const CACHE = 'household-v3';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png',
   './fonts/barlow-condensed-600.woff', './fonts/barlow-condensed-700.woff',
   './fonts/plex-sans-400.woff', './fonts/plex-sans-500.woff', './fonts/plex-sans-600.woff',

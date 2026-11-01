@@ -275,6 +275,7 @@ td.neg{color:var(--over)}
 .howto{font-size:14px;background:var(--sunk);border-radius:10px;padding:10px 12px}
 .howto summary{font-weight:600;cursor:pointer}
 .howto ol{margin:8px 0 2px;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.howto code{font-family:var(--f-mono);font-size:12.5px;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:0 4px;overflow-wrap:anywhere}
 .vers{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .vers button{display:flex;gap:10px;align-items:baseline;background:var(--surface);border:0;border-top:1px solid var(--line);padding:11px 12px;text-align:left;cursor:pointer}
 .vers button:first-child{border-top:0}
@@ -378,7 +379,7 @@ mark{background:var(--soon-bg);color:inherit;border-radius:3px;padding:0 1px}
 <script>
 (function(){
 'use strict';
-var APP_VERSION='2';
+var APP_VERSION='3';
 
 /* ---------- utilities ---------- */
 const $ = s => document.querySelector(s);
@@ -649,10 +650,26 @@ function parseIcs(text){
   }
   return out;
 }
+/* Lines from the "Copy roster for Household" Shortcut: HHR|start|end|all day|title|location */
+function isoTime(v){ v=String(v||'').trim().replace(/([+-]\d{2})(\d{2})$/,'$1:$2').replace(' ','T'); const t=Date.parse(v); return t>0?t:0; }
+function parseRosterLines(text){
+  const out=[];
+  String(text).split(/\r?\n/).forEach(line=>{
+    line=line.trim(); if(!/^HHR\|/i.test(line)) return;
+    const p=line.split('|'); if(p.length<5) return;
+    let s=isoTime(p[1]), e=isoTime(p[2]); if(!s) return;
+    const ad=/^(yes|true|1|ja|oui|si|sí|igen)$/i.test((p[3]||'').trim());
+    if(!(e>s)) e=s+3600000;
+    if(ad){ const d=new Date(s), de=new Date(Math.max(e-1,s)); s=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(); e=new Date(de.getFullYear(),de.getMonth(),de.getDate()+1).getTime(); }
+    out.push({s, e, t:(p[4]||'').trim(), l:p.slice(5).join('|').trim(), allDay:ad});
+  });
+  return out;
+}
 function importRoster(text){
-  const evs=parseIcs(text).filter(e=>e.s>0);
+  const ics=/BEGIN:VEVENT/i.test(text), evs=(ics ? parseIcs(text) : parseRosterLines(text)).filter(e=>e.s>0);
   if(!evs.length) return 0;
-  const lo=Math.min(...evs.map(e=>e.s)), hi=Math.max(...evs.map(e=>e.e||e.s));
+  // a calendar file replaces only its own dates; the Shortcut's list is the whole roster from its first entry on
+  const lo=Math.min(...evs.map(e=>e.s)), hi=ics ? Math.max(...evs.map(e=>e.e||e.s)) : Infinity;
   const ids=new Set();
   evs.forEach(e=>{
     const id='r'+strHash((e.uid||'')+'|'+e.s+'|'+(e.t||'')).replace('.','');
@@ -1465,11 +1482,18 @@ function runSearch(){
 /* ---------- roster sheet ---------- */
 function openRoster(){
   const n=S.data.roster.length, s=n?Math.min(...S.data.roster.map(r=>r.s)):0, e=n?Math.max(...S.data.roster.map(r=>r.e||r.s)):0;
-  showSheet('<h3 id="sheetTitle">Your roster</h3><p class="hint">Import your roster as a calendar file (.ics). Duty days are shaded on the calendar and in This week, and jobs that fall on them are marked On duty. Importing again replaces the same dates.</p>'+
+  showSheet('<h3 id="sheetTitle">Your roster</h3><p class="hint">Duty days are shaded on the calendar and in This week, and jobs that fall on them are marked On duty. CrewPulse puts your roster in the iPhone Calendar; web apps can’t read that calendar, so a one-time Shortcut copies it for this app. Pasting again updates everything from the first pasted day on.</p>'+
+    '<details class="howto"><summary>Make the Shortcut (once, about 5 minutes)</summary><ol>'+
+    '<li>Shortcuts app → <b>+</b>. Name it <b>Copy roster for Household</b>.</li>'+
+    '<li>Add <b>Find Calendar Events</b>. Tap <b>Add Filter</b>: <b>Calendar</b> is your CrewPulse calendar. Add another: <b>Start Date</b> is in the next <b>60</b> days. Sort by Start Date, Oldest First, and leave Limit off.</li>'+
+    '<li>Add <b>Repeat with Each</b>.</li>'+
+    '<li>Inside the repeat, add <b>Text</b> and fill it with, separated by <b>|</b> (vertical bar): <code>HHR</code>, then Repeat Item → <b>Start Date</b>, Repeat Item → <b>End Date</b>, Repeat Item → <b>Is All Day</b>, Repeat Item → <b>Title</b>, Repeat Item → <b>Location</b>. For both dates tap the variable, choose <b>ISO 8601</b> and turn on <b>Include ISO 8601 Time</b>.<br>It reads: <code>HHR|Start Date|End Date|Is All Day|Title|Location</code></li>'+
+    '<li>After <b>End Repeat</b>, add <b>Combine Text</b> (Repeat Results, with <b>New Lines</b>), then <b>Copy to Clipboard</b>.</li>'+
+    '<li>Run it, come back here and tap <b>Paste roster</b>. Run it again whenever the roster changes.</li></ol></details>'+
     '<div class="cl-stat"><b>Imported</b>'+(n?n+' entries · '+esc(fDate(new Date(s)))+' to '+esc(fDate(new Date(e))):'No roster yet')+'</div>'+
     '<input type="file" id="rosIn" class="vh" accept=".ics,text/calendar,text/plain">'+
-    '<div class="sheet-extra"><label class="btn" for="rosIn">Choose roster file</label></div>'+
-    '<label class="fld"><span>Or paste the calendar text</span><textarea id="rosTxt" class="code" rows="4" placeholder="BEGIN:VCALENDAR…" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea></label>'+
+    '<div class="sheet-extra"><button class="btn" type="button" data-act="rospaste">Paste roster</button><label class="btn ghost" for="rosIn">Choose a calendar file</label></div>'+
+    '<label class="fld"><span>Or paste it here yourself (touch and hold, then Paste)</span><textarea id="rosTxt" class="code" rows="4" placeholder="HHR|2026-11-03T08:30:00+04:00|…" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea></label>'+
     '<label class="fld"><span>Not duty: entries containing these words are ignored</span><input id="rosIgn" type="text" value="'+esc(S.settings.rosterIgnore||'')+'" autocapitalize="characters" autocomplete="off"></label>'+
     '<div class="sheet-foot">'+(n?'<button class="btn sm danger" type="button" data-act="rosclear">Remove roster</button>':'')+'<span class="sp"></span><button class="btn ghost" type="button" data-act="close">Close</button><button class="btn" type="button" data-act="rosgo">Save</button></div>','roster');
   $('#rosIn').addEventListener('change',e=>{ const f=e.target.files&&e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ const ta=$('#rosTxt'); if(ta) ta.value=String(rd.result||''); rosterSave(); }; rd.onerror=()=>toast('Couldn’t read that file'); rd.readAsText(f); });
@@ -1478,7 +1502,7 @@ function rosterSave(){
   const ign=($('#rosIgn')||{}).value, txt=(($('#rosTxt')||{}).value||'').trim();
   if(ign!=null && ign!==S.settings.rosterIgnore) setSettings(Object.assign({},S.settings,{rosterIgnore:ign}));
   let n=0;
-  if(txt){ if(!/BEGIN:VEVENT/i.test(txt)){ toast('That isn’t a calendar file. It should contain BEGIN:VEVENT.',3500); return; } n=importRoster(txt); if(!n){ toast('No roster entries found in that file',3500); return; } }
+  if(txt){ if(!/BEGIN:VEVENT/i.test(txt) && !/^HHR\|/im.test(txt)){ toast('That isn’t a roster from the Shortcut. Lines should start with HHR|',3800); return; } n=importRoster(txt); if(!n){ toast('No roster entries found. Check the dates are in ISO 8601 with time.',3800); return; } }
   closeSheet(); commit(); toast(n?'Imported '+n+' roster entries':'Saved');
 }
 
@@ -1762,6 +1786,7 @@ document.addEventListener('click', e=>{
     case 'icsshare': return icsShare();
     case 'roster': return openRoster();
     case 'rosgo': return rosterSave();
+    case 'rospaste': { const ta=$('#rosTxt'); try{ const p=navigator.clipboard && navigator.clipboard.readText && navigator.clipboard.readText(); if(!p) throw 0; return p.then(t=>{ if(!t || !t.trim()){ toast('The clipboard is empty. Run the Shortcut first.',3500); return; } if(ta) ta.value=t; rosterSave(); }, ()=>{ toast('Touch and hold the box below, then Paste',3500); if(ta) ta.focus(); }); }catch(_){ toast('Touch and hold the box below, then Paste',3500); if(ta) ta.focus(); } return; }
     case 'rosclear': return confirmTap(el, ()=>{ S.data.roster.map(r=>r.id).forEach(id=>delDoc('roster',id)); closeSheet(); commit(); toast('Roster removed'); });
     case 'export': return openExport();
     case 'sharefile': return shareFile();
